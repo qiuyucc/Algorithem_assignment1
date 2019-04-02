@@ -9,17 +9,48 @@ import java.util.*;
  *
  * @author Jeffrey Chan, 2019.
  */
+
+
+
 public class AdjList extends AbstractAssocGraph {
 
 	/**
 	 * Contructs empty graph.
 	 */
+	 class Edge
+	{
+		String source;
+		String destination;
+		int weight;
+		
+		public Edge(String source, String destination, int weight) 
+		{
+			this.source = source;
+			this.destination = destination;
+			this.weight = weight;
+		}
+
+		public String getSource() {
+			return source;
+		}
+
+		public String getDestination() {
+			return destination;
+		}
+
+		public int getWeight() {
+			return weight;
+		}
+		
+		
+		
+	}
 
 	protected String[] names;
 	protected myLinkedList[] Edges;
 	protected int numVertices;
 	protected int numEdges;
-     //wozaixie
+
 	// Default constructor. Set the initial size is 1.
 	public AdjList() {
 		// Implement me!
@@ -100,7 +131,27 @@ public class AdjList extends AbstractAssocGraph {
 	} // end of addVertex()
 
 	public void addEdge(String srcLabel, String tarLabel, int weight) {
-		// Implement me!
+		
+		Edge newEdge = new Edge(srcLabel,tarLabel,weight);
+		int i = getIndex(srcLabel);
+		if(i == -1) 
+		{
+			System.out.print("addEdge failed: ");
+			System.out.print(srcLabel);
+			System.out.println( "does not exist.");
+			return;
+		}
+		int j = getIndex(tarLabel);
+		if(j == -1) 
+		{
+			System.out.print("addEdge failed: ");
+			System.out.print("tarLabel");
+			System.out.println("does not exist.");
+		}
+		
+		Edges[i].add(newEdge.getDestination());
+		Edges[j].add(newEdge.getSource());
+		
 	} // end of addEdge()
 
 	public int getEdgeWeight(String srcLabel, String tarLabel) {
@@ -145,28 +196,144 @@ public class AdjList extends AbstractAssocGraph {
 } // end of class AdjList
 
 //Java program to implement 
-//a Singly Linked List 
-class myLinkedList {
 
-	Node head; // head of list
+//a Singly Linked List 
+class myLinkedList<T> {
+
+	private Node<T> first;
+	private Node<T> last; // head of list
+	private int count;
 
 	// Linked list Node.
 	// This inner class is made static
 	// so that main() can access it
-	class Node {
-
-		int data;
-		Node next;
+	class Node<T>{
+		
+		private T data;
+		private Node<T> next;
 
 		// Constructor
-		Node(int d) {
-			data = d;
-			next = null;
+		public Node() {
+			this.data = null;
+			this.next = null;
+		}
+		
+		public Node(T obj) 
+		{
+			this.data = obj;
+			this.next = null;
+		}
+		
+		public T getData() 
+		{
+			return data;
+		}
+		
+		public void setData(T data) 
+		{
+			this.data = data;
+		}
+		
+		public Node<T> getNext()
+		{
+			return next;
+		}
+		
+		public void setNext(Node<T> next) 
+		{
+			this.next = next;
 		}
 	}
 
 	// **************INSERTION**************
-
+	public myLinkedList() 
+	{
+		Node<T> newLinked = new Node<T>();
+		this.first = newLinked;
+		this.last= this.first;
+	}
+	
+	public void add(T data) 
+	{
+		Node<T> newData = new Node<T>(data);
+		if(this.first.getData() ==null) 
+		{
+			this.first = newData;
+			this.last = this.first;
+		}else 
+		{
+			this.last.setNext(newData);
+			this.last = newData;
+		}
+		count++;
+	}
+	
+	public void remove(T data)
+	{
+		Node<T> current = first;
+		if(this.first.getData().equals(data)) 
+		{
+			if(this.first.getNext() == null) 
+			{
+				Node<T> newNode = new Node<T>();
+				this.first.setData(null);
+				this.first = newNode;
+				this.last = this.first;
+			}else 
+			{
+				this.first.setData(null);
+				this.first = this.first.getNext();
+			}
+		}else 
+		{
+			boolean wasDeleted = false;
+			while(!wasDeleted) 
+			{
+				Node<T> currentNext = current.getNext();
+				if(currentNext.getData().equals(data)) 
+				{
+					currentNext.setData(null);
+					current.setNext(currentNext.getNext());
+					currentNext= null;
+					wasDeleted = true;
+					count --;
+				}else
+				{
+					current = current.getNext();
+				}
+			}
+		}
+		
+	}
+	
+	public void print() 
+	{
+		boolean allPrinted = false;
+		Node<T> crr = first;
+		System.out.print("[");
+		while(!allPrinted) 
+		{
+			if(crr.getData() !=null) {
+				if(crr.getNext()!=null) {
+					System.out.print(crr.getData().toString()+",");
+					Node<T> crrNext = crr.getNext();
+					crr = crrNext;
+				}else {
+					System.out.println(crr.getData().toString()+"]");
+					allPrinted=true;
+				}	
+			}else {
+				allPrinted = true;
+			}
+		}
+		System.out.println();
+	}
+	
+	public int getCount() 
+	{
+		return count;
+	}
+	
 	// Method to insert a new node
 	public myLinkedList insert(myLinkedList list, int data) {
 		// Create a new node with given data

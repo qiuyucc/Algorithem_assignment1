@@ -19,7 +19,7 @@ public class AdjList extends AbstractAssocGraph {
 	protected myLinkedList[] Edges;
 	protected int numVertices;
 	protected int numEdges;
-
+     //wozaixie
 	// Default constructor. Set the initial size is 1.
 	public AdjList() {
 		// Implement me!

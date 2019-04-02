@@ -14,12 +14,89 @@ public class AdjList extends AbstractAssocGraph {
 	/**
 	 * Contructs empty graph.
 	 */
+
+	protected String[] names;
+	protected myLinkedList[] Edges;
+	protected int numVertices;
+	protected int numEdges;
+
+	// Default constructor. Set the initial size is 1.
 	public AdjList() {
 		// Implement me!
+		this(1);
 	} // end of AdjList()
 
+	// Constructor that set the particular size of graph.
+	public AdjList(int size) {
+		names = new String[size];
+		Edges = new myLinkedList[size];
+		for (int i = 0; i < size; i++) {
+			Edges[i] = new myLinkedList();
+		}
+	}
+
+	public int numberOfVertices() {
+		return numVertices;
+	}
+
+	public int numberOfEdges() {
+		return numEdges;
+	}
+
+	// Find whether the particular vertex in the graph,
+	// return -1 if not found.
+	public int getIndex(String vertLabel) {
+		for (int i = 0; i < numVertices; i++) {
+			if (vertLabel.equals(names[i]))
+				return i;
+		}
+		return -1;
+	}
+
+	// Resizes the array of vertices.
+	protected String[] resize(String[] array, int newSize) {
+		String[] temp = new String[newSize];
+
+		int smallerSize = newSize;
+		if (array.length < smallerSize)
+			smallerSize = array.length;
+
+		// copy all the vertices to the new array
+		for (int i = 0; i < smallerSize; i++)
+			temp[i] = array[i];
+
+		return temp;
+	}
+
+	protected myLinkedList[] resize(myLinkedList[] array, int newSize) {
+		myLinkedList[] temp = new myLinkedList[newSize];
+
+		int smallerSize = newSize;
+		if (array.length < newSize)
+			smallerSize = array.length;
+
+		for (int i = 0; i < smallerSize; i++)
+			temp[i] = array[i];
+
+		for (int i = smallerSize; i < temp.length; i++)
+			temp[i] = new myLinkedList();
+
+		return temp;
+	}
+
 	public void addVertex(String vertLabel) {
-		// Implement me!
+		// check the vertex existed or not
+		if (getIndex(vertLabel) != -1) {
+			System.out.println("AddVertex: " + vertLabel);
+			System.out.println("Failed, vertex already exists.");
+			return;
+		}
+		// if array of vertex is full, we have to expand it and Edges
+		if (names.length == numVertices) {
+			names = resize(names, 2 * numVertices + 1);
+			Edges = resize(Edges, 2 * numVertices + 1);
+		}
+		names[numVertices++]=vertLabel;
 	} // end of addVertex()
 
 	public void addEdge(String srcLabel, String tarLabel, int weight) {
@@ -65,11 +142,6 @@ public class AdjList extends AbstractAssocGraph {
 		// Implement me!
 	} // end of printEdges()
 
-	protected class Node {
-		public Node() {
-
-		}
-	}
 } // end of class AdjList
 
 //Java program to implement 
@@ -81,7 +153,7 @@ class myLinkedList {
 	// Linked list Node.
 	// This inner class is made static
 	// so that main() can access it
-	static class Node {
+	class Node {
 
 		int data;
 		Node next;
@@ -96,7 +168,7 @@ class myLinkedList {
 	// **************INSERTION**************
 
 	// Method to insert a new node
-	public static myLinkedList insert(myLinkedList list, int data) {
+	public myLinkedList insert(myLinkedList list, int data) {
 		// Create a new node with given data
 		Node new_node = new Node(data);
 		new_node.next = null;
@@ -124,7 +196,7 @@ class myLinkedList {
 	// **************TRAVERSAL**************
 
 	// Method to print the LinkedList.
-	public static void printList(myLinkedList list) {
+	public void printList(myLinkedList list) {
 		Node currNode = list.head;
 
 		System.out.print("\nLinkedList: ");
@@ -143,7 +215,7 @@ class myLinkedList {
 	// **************DELETION BY KEY**************
 
 	// Method to delete a node in the LinkedList by KEY
-	public static myLinkedList deleteByKey(myLinkedList list, int key) {
+	public myLinkedList deleteByKey(myLinkedList list, int key) {
 		// Store head node
 		Node currNode = list.head, prev = null;
 
@@ -205,7 +277,7 @@ class myLinkedList {
 	// **************DELETION AT A POSITION**************
 
 	// Method to delete a node in the LinkedList by POSITION
-	public static myLinkedList deleteAtPosition(myLinkedList list, int index) {
+	public myLinkedList deleteAtPosition(myLinkedList list, int index) {
 		// Store head node
 		Node currNode = list.head, prev = null;
 

@@ -197,24 +197,100 @@ public class AdjList extends AbstractAssocGraph {
 
 	public List<MyPair> inNearestNeighbours(int k, String vertLabel) {
 		List<MyPair> neighbours = new ArrayList<MyPair>();
-
-		for (int i = 0; i < numVertices; i++) {
-			
-			for(int j =0;j<nbrs.length;j++)
-				neighbours.add(nbrs[j])
-
-		}
+		
+		
+		
 
 		return neighbours;
 	} // end of inNearestNeighbours()
-
+   //Find the tarLabel of this vertex
 	public List<MyPair> outNearestNeighbours(int k, String vertLabel) {
 		List<MyPair> neighbours = new ArrayList<MyPair>();
 		
-
-	
+		int i = getIndex(vertLabel);
+		if (i == -1) {
+			System.out.print("search failed: ");
+			System.out.print(vertLabel);
+			System.out.println("does not exist.");
+			return neighbours;
+		}
+		String[] nbrs = getNeighbors(vertLabel); //vertex a, neighbor: b,c,d
+		if(k>list.length-1) 
+		{
+			System.out.println("out of bound");
+		}else 
+		{
+			if(k!=-1) 
+			{
+				//考虑倒叙，所以小的放后面
+				String [] nbrsTemp = nbrs;
+				String tempName = null;
+				for (int z =0; z<nbrs.length-1;z++) 
+				{
+					for(int y=0; y<nbrs.length-1-z;y++) 
+					{
+						int tempWeight1 = getWeight(i,y);
+						int tempWeight2 =getWeight(i,y+1);
+						if(tempWeight1<tempWeight2) 
+						{
+							 tempName = nbrs[y];
+							 nbrs[y] = nbrs[y+1];
+							 nbrs[y+1] = tempName;
+						}
+					}
+				}
+				for(int x=0; x<k;x++) 
+				{
+					MyPair newPair = new MyPair(nbrs[x],list[i].find(nbrs[x]).getWeight());
+					neighbours.add(newPair);
+				}
+				
+			}
+			else 
+			{  //get all the neighbor of specific vertex
+				
+				for(int j=0;j<nbrs.length;j++) 
+				{
+					int tempWeight=getWeight(i,j);
+					MyPair newPair= new MyPair(nbrs[j],tempWeight); 
+					neighbours.add(newPair);
+				}
+			}
+		}
+		
 		return neighbours;
 	} // end of outNearestNeighbours()
+	
+    public Integer getWeight(int i, int j)
+    {
+            if((i < 0) || (i > numVertices-1))
+            {
+                    System.out.print("getWeight failed: ");
+                    System.out.print("index " + i);
+                    System.out.println(" out of bounds.");
+                    return null;
+            }
+
+            if((j < 0) || (j > numVertices-1))
+            {
+                    System.out.print("getWeight failed: ");
+                    System.out.print("index " + j);
+                    System.out.println(" out of bounds.");
+                    return null;
+            }
+
+            // Look for vertex j in Edges[i]
+//System.out.println("Looking for " + names[j] + " in linked list " + i);
+            Node e = list[i].find(names[j]);
+
+	// If vertex j is found in Edges[i] then return the weight of
+	// the edge, otherwise return null
+	if(e != null)
+		return new Integer(e.weight) ;
+	else 
+		return null;
+    }
+
 
 	public void printVertices(PrintWriter os) {
 		for (String i : names) {
@@ -257,7 +333,7 @@ public class AdjList extends AbstractAssocGraph {
 
 // Call the earlier getNeighbors function to get the names of
 // neighbors
-		String[] nbrNames = getNeighb`ors(names[index]);
+		String[] nbrNames = getNeighbors(names[index]);
 
 // Turn the array of neighbor names into an array
 // of neighbor indices

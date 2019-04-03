@@ -117,13 +117,13 @@ public class AdjList extends AbstractAssocGraph {
 			System.out.println("does not exist.");
 		}
 
-		Edges[i].add(newEdge.getDestination());
+		Edges[i].add(newEdge);
 
 	} // end of addEdge()
 
 	public int getEdgeWeight(String srcLabel, String tarLabel) {
 		// Implement me!
-
+		
 		// update return value
 		return EDGE_NOT_EXIST;
 	} // end of existEdge()
@@ -498,6 +498,20 @@ class myLinkedList {
 		mLength++;
 	} // end of add()
 	
+	public void add(Edge newEdge) 
+	{
+		Node newNode = new Node(newEdge);
+		
+		if(mHead == null) 
+		{
+			mHead = newNode;
+		}
+		else 
+		{
+			newNode.setNext(mHead);
+			mHead = newNode;
+		}
+	}
 	/**
      * Returns the value stored in node at position 'index' of list.
      *  
@@ -537,6 +551,23 @@ class myLinkedList {
         return false;
     } // end of search()
     
+    public Node find(Edge obj)
+    {
+    	//if empty linked list, then return null
+    	
+    	if(mHead == null)
+    		return null;
+    	// otherwise scan list until a node equals edge is found
+    	Node current  = mHead;
+    	while(!(current.equals(obj))) 
+    	{
+    		if(current.getNext() == null)
+    			return null;
+    		else 
+    			current = current.getNext();
+    	}
+    	return current;  //Found it
+    }
     /**
      * Delete given value from list (delete first instance found).
      *   
@@ -644,6 +675,7 @@ class myLinkedList {
 	private class Node {
 		/** Stored value of node. */
 		protected int mValue;
+		protected Edge edgeObj;
 		/** Reference to next node. */
 		protected Node mNext;
 
@@ -651,9 +683,23 @@ class myLinkedList {
 			mValue = value;
 			mNext = null;
 		}
+		
+		public Node(Edge obj) 
+		{
+			edgeObj = obj;
+			mNext = null;
+		}
 
 		public int getValue() {
 			return mValue;
+		}
+	
+		public Edge getObj() {
+			return edgeObj;
+		}
+
+		public void setObj(Edge eObj) {
+			this.edgeObj = eObj;
 		}
 
 		public Node getNext() {

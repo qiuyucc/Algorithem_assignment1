@@ -118,15 +118,27 @@ public class AdjList extends AbstractAssocGraph {
 		}
 		System.out.println("addEdge success");
 		list[i].add(newNode);
+		list[i].mLengthInc();
 
-			
 	} // end of addEdge()
 
 	public int getEdgeWeight(String srcLabel, String tarLabel) {
 		// Implement me!
-
+		int i = getIndex(srcLabel);
+		if (i == -1) {
+			System.out.print("getEdge failed: ");
+			System.out.print(srcLabel);
+			System.out.println("does not exist.");
+			return EDGE_NOT_EXIST;
+		}
+		if (this.list[i].find(tarLabel) == null) {
+			System.out.print("addEdge failed: ");
+			System.out.print(tarLabel);
+			System.out.println("does not exist.");
+			return EDGE_NOT_EXIST;
+		}
+		return this.list[i].find(tarLabel).getWeight();
 		// update return value
-		return EDGE_NOT_EXIST;
 	} // end of existEdge()
 
 	public void updateWeightEdge(String srcLabel, String tarLabel, int weight) {
@@ -226,6 +238,14 @@ public class AdjList extends AbstractAssocGraph {
 			}
 		}
 
+		public int mLengthInc() {
+			return mLength++;
+		}
+
+		public int mLengthDec() {
+			return mLength--;
+		}
+
 		public boolean find(Node node) {
 			// if empty linked list, then return null
 
@@ -242,83 +262,47 @@ public class AdjList extends AbstractAssocGraph {
 			return true; // Found it
 		}
 
+		public Node find(String label) {
+			// if empty linked list, then return null
+
+			if (mHead == null)
+				return null;
+			// otherwise scan list until a node equals edge is found
+			Node current = mHead;
+			while (!(current.getValue().equals(label))) {
+				if (current.getNext() == null)
+					return null;
+				else
+					current = current.getNext();
+			}
+			return current;
+		}
+
 		/**
 		 * Delete given value from list (delete first instance found).
 		 * 
 		 * @param value Value to remove.
 		 * @return True if deletion was successful, otherwise false.
 		 */
-		public boolean remove(int value) {
-			// YOUR IMPLEMENTATION
-			if (mLength == 0) {
+		public boolean delete(Node node) {
+			// if empty linked list, then return null
+			Node current = null;
+			Node previous = null;
+			if (mHead == null)
 				return false;
+			current = mHead;
+			previous = mHead;
+
+			while (current.getValue() != node.getValue()) {
+				if (current.getNext() == null)
+					return false;
+				else
+					current = current.getNext();
 			}
+			mLengthDec();
+			return true;
 
-			Node currNode = mHead;
-			Node prevNode = null;
-
-			// check if value is head node
-			if (currNode.getValue() == value) {
-				mHead = currNode.getNext();
-				mLength--;
-				return true;
-			}
-
-			prevNode = currNode;
-			currNode = currNode.getNext();
-
-			while (currNode != null) {
-				if (currNode.getValue() == value) {
-					prevNode.setNext(currNode.getNext());
-					currNode = null;
-					mLength--;
-					return true;
-				}
-				prevNode = currNode;
-				currNode = currNode.getNext();
-			}
-
-			return false;
-		} // end of delete()
-
-		/**
-		 * Delete value (and corresponding node) at position 'index'. Indices start at
-		 * 0.
-		 * 
-		 * @param index Position in list to get new value for.
-		 * @param dummy Dummy variable, serves no use apart from distinguishing
-		 *              overloaded methods.
-		 * @return Value of node that was deleted.
-		 */
-		public int remove(int index, boolean dummy) throws IndexOutOfBoundsException {
-			// YOUR IMPLEMENTATION
-			if (index >= mLength || index < 0) {
-				throw new IndexOutOfBoundsException("Supplied index is invalid.");
-			}
-
-			Node currNode = mHead;
-			Node prevNode = null;
-
-			int value;
-			// deleting head
-			if (index == 0) {
-				value = currNode.getValue();
-				mHead = currNode.getNext();
-			} else {
-				for (int i = 0; i < index; ++i) {
-					prevNode = currNode;
-					currNode = currNode.getNext();
-				}
-
-				value = currNode.getValue();
-				prevNode.setNext(currNode.getNext());
-				currNode = null;
-			}
-
-			mLength--;
-
-			return value;
-		} // end of delete()
+		}
 
 		/**
 		 * Print the list in head to tail.

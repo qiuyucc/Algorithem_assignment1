@@ -119,6 +119,7 @@ public class AdjList extends AbstractAssocGraph {
 		System.out.println("addEdge success");
 		list[i].add(newNode);
 		list[i].mLengthInc();
+		numEdges++;
 
 	} // end of addEdge()
 
@@ -142,36 +143,130 @@ public class AdjList extends AbstractAssocGraph {
 	} // end of existEdge()
 
 	public void updateWeightEdge(String srcLabel, String tarLabel, int weight) {
-		// Implement me!
+
+		Node newNode = new Node(tarLabel, weight);
+		int i = getIndex(srcLabel);
+		if (i == -1) {
+			System.out.print("updateWeightEdge failed: ");
+			System.out.print(srcLabel);
+			System.out.println("does not exist.");
+			return;
+		}
+		if (this.list[i].find(newNode) == false) {
+			System.out.print("updateWeightEdge failed: ");
+			System.out.print(tarLabel);
+			System.out.println("does not exist.");
+			return;
+		}
+		System.out.println("updateWeightEdge success");
+		if (this.list[i].find(tarLabel).getWeight() == weight) {
+			System.out.println("updated fail - same value");
+			return;
+		}
+		System.out.println("updated success");
+		this.list[i].find(tarLabel).setWeight(weight);
+
 	} // end of updateWeightEdge()
 
 	public void removeVertex(String vertLabel) {
-		// Implement me!
+
+		int i = getIndex(vertLabel);
+		if (i == -1) {
+			System.out.print("remove failed: ");
+			System.out.print(vertLabel);
+			System.out.println("does not exist.");
+			return;
+		}
+		for (int j = i; j < names.length - 1; j++) {
+			names[j] = names[j + 1];
+		}
+		numVertices--;
+
+		list[i].clear();
+		for (int j = i; j < list.length - 1; j++) {
+			list[j] = list[j + 1];
+
+		}
+		for (int z = 0; z < list.length; z++) {
+			if (!list[z].delete(vertLabel))
+				System.out.println("remove failed - linked list");
+		}
+
+		System.out.println("remove success");
 	} // end of removeVertex()
 
 	public List<MyPair> inNearestNeighbours(int k, String vertLabel) {
 		List<MyPair> neighbours = new ArrayList<MyPair>();
 
-		// Implement me!
+		for (int i = 0; i < numVertices; i++) {
+			
+			for(int j =0;j<nbrs.length;j++)
+				neighbours.add(nbrs[j])
+
+		}
 
 		return neighbours;
 	} // end of inNearestNeighbours()
 
 	public List<MyPair> outNearestNeighbours(int k, String vertLabel) {
 		List<MyPair> neighbours = new ArrayList<MyPair>();
+		
 
-		// Implement me!
-
+	
 		return neighbours;
 	} // end of outNearestNeighbours()
 
 	public void printVertices(PrintWriter os) {
-		// Implement me!
+		for (String i : names) {
+			os.print(i + " ");
+		}
 	} // end of printVertices()
 
 	public void printEdges(PrintWriter os) {
-		// Implement me!
+
+		for (int i = 0; i < numVertices; i++) {
+			int[] nbrs = getNeighbors(i);
+			for(int j =0;j<nbrs.length;j++)
+				System.out.println(names[i] + " " + names[nbrs[j]]);
+
+		}
 	} // end of printEdges()
+
+	// returns the name of all the neighbors of a given vertex in a string array
+	public String[] getNeighbors(String vertex) {
+		int source = getIndex(vertex);
+		if (source == -1) {
+			System.out.print("getNeighbors failed: Vertex ");
+			System.out.print(vertex);
+			System.out.println(" does not exist.");
+			return null;
+		}
+		return list[source].copyIntoArray();
+	}
+	// returns the indices of all the neighbors of a given vertex.
+	// The vertex is specified as an index and the neighbors are returned in an int
+	// array
+
+	public int[] getNeighbors(int index) {
+		if ((index < 0) || (index >= numVertices)) {
+			System.out.print("getNeighbors failed: Index");
+			System.out.print(index);
+			System.out.println(" is out of bounds.");
+			return null;
+		}
+
+// Call the earlier getNeighbors function to get the names of
+// neighbors
+		String[] nbrNames = getNeighb`ors(names[index]);
+
+// Turn the array of neighbor names into an array
+// of neighbor indices
+		int[] nbrIndices = new int[nbrNames.length];
+		for (int i = 0; i < nbrIndices.length; i++)
+			nbrIndices[i] = getIndex(nbrNames[i]);
+
+		return nbrIndices;
+	}
 
 	protected class Node {
 		/** Stored value of node. */
@@ -208,6 +303,10 @@ public class AdjList extends AbstractAssocGraph {
 
 		public void setNext(Node next) {
 			mNext = next;
+		}
+
+		public void displayNode() {
+			System.out.print("{" + mValue + "}");
 		}
 	} // end of inner class Node
 
@@ -262,6 +361,16 @@ public class AdjList extends AbstractAssocGraph {
 			return true; // Found it
 		}
 
+		public void displayList() {
+			System.out.print("List (first-->last):");
+			Node current = mHead;
+			while (current != null) {
+				current.displayNode();
+				current = current.getNext();
+			}
+			System.out.println("");
+		}
+
 		public Node find(String label) {
 			// if empty linked list, then return null
 
@@ -278,13 +387,18 @@ public class AdjList extends AbstractAssocGraph {
 			return current;
 		}
 
+		public void clear() {
+			mHead = null;
+			mLength = 0;
+		}
+
 		/**
 		 * Delete given value from list (delete first instance found).
 		 * 
 		 * @param value Value to remove.
 		 * @return True if deletion was successful, otherwise false.
 		 */
-		public boolean delete(Node node) {
+		public boolean delete(String vertex) {
 			// if empty linked list, then return null
 			Node current = null;
 			Node previous = null;
@@ -293,12 +407,19 @@ public class AdjList extends AbstractAssocGraph {
 			current = mHead;
 			previous = mHead;
 
-			while (current.getValue() != node.getValue()) {
+			while (current.getValue() != vertex) {
 				if (current.getNext() == null)
 					return false;
-				else
+				else {
+					previous = current;
 					current = current.getNext();
+				}
 			}
+			if (current == mHead)
+				mHead = mHead.getNext();
+			else
+				previous.setNext(current.getNext());
+
 			mLengthDec();
 			return true;
 
@@ -327,5 +448,22 @@ public class AdjList extends AbstractAssocGraph {
 			return str.toString();
 		} // end of getString();
 
+		/*
+		 * The funtion returns a copy of the keys (Strings) in the list in an array, but
+		 * with items in reverse order
+		 */
+		public String[] copyIntoArray() {
+			String[] temp = new String[mLength];
+			Node current = mHead;
+
+			// Scan this list from front to back
+			int index = 0;
+
+			while (current != null) {
+				temp[index++] = current.getValue();
+				current = current.getNext();
+			}
+			return temp;
+		}
 	}
 } // end of class AdjList

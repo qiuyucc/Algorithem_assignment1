@@ -197,9 +197,78 @@ public class AdjList extends AbstractAssocGraph {
 
 	public List<MyPair> inNearestNeighbours(int k, String vertLabel) {
 		List<MyPair> neighbours = new ArrayList<MyPair>();
+		List<MyPair> nbTemp= new ArrayList<MyPair>();
+		MyPair pairTemp;
+		Node[] nodeTemp = null;
+		String temp;
+		int weightTemp;
 		
-		
-		
+		int i = getIndex(vertLabel);
+		if (i == -1) {
+			System.out.print("search failed: ");
+			System.out.print(vertLabel);
+			System.out.println("does not exist.");
+			return neighbours;
+		}
+		if(k>list.length-1||k<-1) 
+		{
+			System.out.print("out of bound");
+		}
+		if(k!=-1) 
+		{
+			
+			for (int j =0; j<names.length;j++) 
+			{
+				for(int z =0; z<list[j].mLength;j++) 
+				{
+					if(list[j].find(vertLabel)!=null) {
+						temp = names[j];
+						weightTemp=list[j].find(vertLabel).getWeight();
+						MyPair myPair= new MyPair(temp,weightTemp);
+						nbTemp.add(myPair);
+					}		
+				}
+			}
+			
+			for (int j =0; j<nbTemp.size()-1;j++) 
+			{
+				for(int y=0; y<nbTemp.size()-1-j;y++) 
+				{
+					int tempWeight1 = nbTemp.get(y).getValue();
+					int tempWeight2 =nbTemp.get(y+1).getValue();
+					if(tempWeight1<tempWeight2) 
+					{
+						 pairTemp = nbTemp.get(y);
+						 nbTemp.set(y, nbTemp.get(y+1));
+						 nbTemp.set(y+1, pairTemp);
+					}
+				}
+			}
+			
+			for(int x=0; x<k;x++) 
+			{
+				MyPair newPair = new MyPair(nbTemp.get(x).getKey(),nbTemp.get(x).getValue());
+				neighbours.add(newPair);
+			}
+			
+		}else{
+			//K=-1 print all the connections
+			for (int j =0; j<names.length;j++) 
+			{
+				for(int z =0; z<list[j].mLength;j++) 
+				{
+					if(list[j].find(vertLabel)!=null) {
+						temp = names[j];
+						weightTemp=list[j].find(vertLabel).getWeight();
+						MyPair myPair= new MyPair(temp,weightTemp);
+						neighbours.add(myPair);
+					}
+					
+					
+				}
+			}
+			
+		}
 
 		return neighbours;
 	} // end of inNearestNeighbours()
@@ -215,14 +284,13 @@ public class AdjList extends AbstractAssocGraph {
 			return neighbours;
 		}
 		String[] nbrs = getNeighbors(vertLabel); //vertex a, neighbor: b,c,d
-		if(k>list.length-1) 
+		if(k>list.length-1||k<-1) 
 		{
 			System.out.println("out of bound");
-		}else 
-		{
+		}
 			if(k!=-1) 
 			{
-				//考虑倒叙，所以小的放后面
+				
 				String [] nbrsTemp = nbrs;
 				String tempName = null;
 				for (int z =0; z<nbrs.length-1;z++) 
@@ -241,7 +309,7 @@ public class AdjList extends AbstractAssocGraph {
 				}
 				for(int x=0; x<k;x++) 
 				{
-					MyPair newPair = new MyPair(nbrs[x],list[i].find(nbrs[x]).getWeight());
+					MyPair newPair = new MyPair(nbrsTemp[x],list[i].find(nbrsTemp[x]).getWeight());
 					neighbours.add(newPair);
 				}
 				
@@ -256,7 +324,7 @@ public class AdjList extends AbstractAssocGraph {
 					neighbours.add(newPair);
 				}
 			}
-		}
+		
 		
 		return neighbours;
 	} // end of outNearestNeighbours()

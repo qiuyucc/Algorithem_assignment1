@@ -98,7 +98,7 @@ public class AdjList extends AbstractAssocGraph {
 			list = resize(list, 2 * numVertices + 1);
 		}
 		names[numVertices++] = vertLabel;
-		System.out.println("This vertex:"+ names[numVertices-1]);
+		System.out.println("This vertex added: " + names[numVertices - 1]);
 	} // end of addVertex()
 
 	public void addEdge(String srcLabel, String tarLabel, int weight) {
@@ -108,14 +108,19 @@ public class AdjList extends AbstractAssocGraph {
 		if (i == -1) {
 			System.out.print("addEdge failed: ");
 			System.out.print(srcLabel);
-			System.out.println(" -does not exist.");
+			System.out.println(" - does not exist.");
 			return;
 		}
-		int j= getIndex(tarLabel);
-		if (j==-1) {
+		int j = getIndex(tarLabel);
+		if (j == -1) {
 			System.out.print("addEdge failed: ");
 			System.out.print(tarLabel);
-			System.out.println(" -does not exist.");
+			System.out.println(" - does not exist.");
+			return;
+		}
+		if (this.list[i].find(newNode) == true) {
+			System.out.print("addEdge failed: ");
+			System.out.println(" - edge already exist.");
 			return;
 		}
 		System.out.println("addEdge success");
@@ -131,13 +136,13 @@ public class AdjList extends AbstractAssocGraph {
 		if (i == -1) {
 			System.out.print("getEdge failed: ");
 			System.out.print(srcLabel);
-			System.out.println("does not exist.");
+			System.out.println(" does not exist.");
 			return EDGE_NOT_EXIST;
 		}
 		if (this.list[i].find(tarLabel) == null) {
 			System.out.print("addEdge failed: ");
-			System.out.print(tarLabel);
-			System.out.println("does not exist.");
+			System.out.print("Edge");
+			System.out.println(" does not exist.");
 			return EDGE_NOT_EXIST;
 		}
 		return this.list[i].find(tarLabel).getWeight();
@@ -151,16 +156,15 @@ public class AdjList extends AbstractAssocGraph {
 		if (i == -1) {
 			System.out.print("updateWeightEdge failed: ");
 			System.out.print(srcLabel);
-			System.out.println("does not exist.");
+			System.out.println(" does not exist.");
 			return;
 		}
 		if (this.list[i].find(newNode) == false) {
 			System.out.print("updateWeightEdge failed: ");
-			System.out.print(tarLabel);
-			System.out.println("does not exist.");
+			System.out.print("Edge");
+			System.out.println(" does not exist.");
 			return;
 		}
-		System.out.println("updateWeightEdge success");
 		if (this.list[i].find(tarLabel).getWeight() == weight) {
 			System.out.println("updated fail - same value");
 			return;
@@ -176,35 +180,37 @@ public class AdjList extends AbstractAssocGraph {
 		if (i == -1) {
 			System.out.print("remove failed: ");
 			System.out.print(vertLabel);
-			System.out.println("does not exist.");
+			System.out.println(" does not exist.");
 			return;
 		}
+		// delete the vertLabel in the names array
 		for (int j = i; j < names.length - 1; j++) {
 			names[j] = names[j + 1];
 		}
 		numVertices--;
 
+		// clear all the destination of this source vertex
 		list[i].clear();
+
+		// sync the index array to the name array
 		for (int j = i; j < list.length - 1; j++) {
 			list[j] = list[j + 1];
 
 		}
 		for (int z = 0; z < list.length; z++) {
-			if (!list[z].delete(vertLabel))
-				System.out.println("remove failed - linked list");
+			list[z].delete(vertLabel);
 		}
 
-		System.out.println("remove success");
 	} // end of removeVertex()
 
 	public List<MyPair> inNearestNeighbours(int k, String vertLabel) {
 		List<MyPair> neighbours = new ArrayList<MyPair>();
-		List<MyPair> nbTemp= new ArrayList<MyPair>();
+		List<MyPair> nbTemp = new ArrayList<MyPair>();
 		MyPair pairTemp;
 		Node[] nodeTemp = null;
 		String temp;
 		int weightTemp;
-		
+
 		int i = getIndex(vertLabel);
 		if (i == -1) {
 			System.out.print("search failed: ");
@@ -212,72 +218,62 @@ public class AdjList extends AbstractAssocGraph {
 			System.out.println("does not exist.");
 			return neighbours;
 		}
-		if(k>list.length-1||k<-1) 
-		{
+		if (k > list.length - 1 || k < -1) {
 			System.out.print("out of bound");
 		}
-		if(k!=-1) 
-		{
-			
-			for (int j =0; j<names.length;j++) 
-			{
-				for(int z =0; z<list[j].mLength;j++) 
-				{
-					if(list[j].find(vertLabel)!=null) {
+		if (k != -1) {
+
+			for (int j = 0; j < names.length; j++) {
+				for (int z = 0; z < list[j].mLength; j++) {
+					if (list[j].find(vertLabel) != null) {
 						temp = names[j];
-						weightTemp=list[j].find(vertLabel).getWeight();
-						MyPair myPair= new MyPair(temp,weightTemp);
+						weightTemp = list[j].find(vertLabel).getWeight();
+						MyPair myPair = new MyPair(temp, weightTemp);
 						nbTemp.add(myPair);
-					}		
-				}
-			}
-			
-			for (int j =0; j<nbTemp.size()-1;j++) 
-			{
-				for(int y=0; y<nbTemp.size()-1-j;y++) 
-				{
-					int tempWeight1 = nbTemp.get(y).getValue();
-					int tempWeight2 =nbTemp.get(y+1).getValue();
-					if(tempWeight1<tempWeight2) 
-					{
-						 pairTemp = nbTemp.get(y);
-						 nbTemp.set(y, nbTemp.get(y+1));
-						 nbTemp.set(y+1, pairTemp);
 					}
 				}
 			}
-			
-			for(int x=0; x<k;x++) 
-			{
-				MyPair newPair = new MyPair(nbTemp.get(x).getKey(),nbTemp.get(x).getValue());
+
+			for (int j = 0; j < nbTemp.size() - 1; j++) {
+				for (int y = 0; y < nbTemp.size() - 1 - j; y++) {
+					int tempWeight1 = nbTemp.get(y).getValue();
+					int tempWeight2 = nbTemp.get(y + 1).getValue();
+					if (tempWeight1 < tempWeight2) {
+						pairTemp = nbTemp.get(y);
+						nbTemp.set(y, nbTemp.get(y + 1));
+						nbTemp.set(y + 1, pairTemp);
+					}
+				}
+			}
+
+			for (int x = 0; x < k; x++) {
+				MyPair newPair = new MyPair(nbTemp.get(x).getKey(), nbTemp.get(x).getValue());
 				neighbours.add(newPair);
 			}
-			
-		}else{
-			//K=-1 print all the connections
-			for (int j =0; j<names.length;j++) 
-			{
-				for(int z =0; z<list[j].mLength;j++) 
-				{
-					if(list[j].find(vertLabel)!=null) {
+
+		} else {
+			// K=-1 print all the connections
+			for (int j = 0; j < names.length; j++) {
+				for (int z = 0; z < list[j].mLength; j++) {
+					if (list[j].find(vertLabel) != null) {
 						temp = names[j];
-						weightTemp=list[j].find(vertLabel).getWeight();
-						MyPair myPair= new MyPair(temp,weightTemp);
+						weightTemp = list[j].find(vertLabel).getWeight();
+						MyPair myPair = new MyPair(temp, weightTemp);
 						neighbours.add(myPair);
 					}
-					
-					
+
 				}
 			}
-			
+
 		}
 
 		return neighbours;
 	} // end of inNearestNeighbours()
-   //Find the tarLabel of this vertex
+		// Find the tarLabel of this vertex
+
 	public List<MyPair> outNearestNeighbours(int k, String vertLabel) {
 		List<MyPair> neighbours = new ArrayList<MyPair>();
-		
+
 		int i = getIndex(vertLabel);
 		if (i == -1) {
 			System.out.print("search failed: ");
@@ -285,86 +281,72 @@ public class AdjList extends AbstractAssocGraph {
 			System.out.println("does not exist.");
 			return neighbours;
 		}
-		String[] nbrs = getNeighbors(vertLabel); //vertex a, neighbor: b,c,d
-		if(k>list.length-1||k<-1) 
-		{
+		String[] nbrs = getNeighbors(vertLabel); // vertex a, neighbor: b,c,d
+		if (k > list.length - 1 || k < -1) {
 			System.out.println("out of bound");
 		}
-			if(k!=-1) 
-			{
-				
-				String [] nbrsTemp = nbrs;
-				String tempName = null;
-				for (int z =0; z<nbrs.length-1;z++) 
-				{
-					for(int y=0; y<nbrs.length-1-z;y++) 
-					{
-						int tempWeight1 = getWeight(i,y);
-						int tempWeight2 =getWeight(i,y+1);
-						if(tempWeight1<tempWeight2) 
-						{
-							 tempName = nbrs[y];
-							 nbrs[y] = nbrs[y+1];
-							 nbrs[y+1] = tempName;
-						}
+		if (k != -1) {
+
+			String[] nbrsTemp = nbrs;
+			String tempName = null;
+			for (int z = 0; z < nbrs.length - 1; z++) {
+				for (int y = 0; y < nbrs.length - 1 - z; y++) {
+					int tempWeight1 = getWeight(i, y);
+					int tempWeight2 = getWeight(i, y + 1);
+					if (tempWeight1 < tempWeight2) {
+						tempName = nbrs[y];
+						nbrs[y] = nbrs[y + 1];
+						nbrs[y + 1] = tempName;
 					}
 				}
-				for(int x=0; x<k;x++) 
-				{
-					MyPair newPair = new MyPair(nbrsTemp[x],list[i].find(nbrsTemp[x]).getWeight());
-					neighbours.add(newPair);
-				}
-				
 			}
-			else 
-			{  //get all the neighbor of specific vertex
-				
-				for(int j=0;j<nbrs.length;j++) 
-				{
-					int tempWeight=getWeight(i,j);
-					MyPair newPair= new MyPair(nbrs[j],tempWeight); 
-					neighbours.add(newPair);
-				}
+			for (int x = 0; x < k; x++) {
+				MyPair newPair = new MyPair(nbrsTemp[x], list[i].find(nbrsTemp[x]).getWeight());
+				neighbours.add(newPair);
 			}
-		
-		
+
+		} else { // get all the neighbor of specific vertex
+
+			for (int j = 0; j < nbrs.length; j++) {
+				int tempWeight = getWeight(i, j);
+				MyPair newPair = new MyPair(nbrs[j], tempWeight);
+				neighbours.add(newPair);
+			}
+		}
+
 		return neighbours;
 	} // end of outNearestNeighbours()
-	
-    public Integer getWeight(int i, int j)
-    {
-            if((i < 0) || (i > numVertices-1))
-            {
-                    System.out.print("getWeight failed: ");
-                    System.out.print("index " + i);
-                    System.out.println(" out of bounds.");
-                    return null;
-            }
 
-            if((j < 0) || (j > numVertices-1))
-            {
-                    System.out.print("getWeight failed: ");
-                    System.out.print("index " + j);
-                    System.out.println(" out of bounds.");
-                    return null;
-            }
+	public Integer getWeight(int i, int j) {
+		if ((i < 0) || (i > numVertices - 1)) {
+			System.out.print("getWeight failed: ");
+			System.out.print("index " + i);
+			System.out.println(" out of bounds.");
+			return null;
+		}
 
-            // Look for vertex j in Edges[i]
+		if ((j < 0) || (j > numVertices - 1)) {
+			System.out.print("getWeight failed: ");
+			System.out.print("index " + j);
+			System.out.println(" out of bounds.");
+			return null;
+		}
+
+		// Look for vertex j in Edges[i]
 //System.out.println("Looking for " + names[j] + " in linked list " + i);
-            Node e = list[i].find(names[j]);
+		Node e = list[i].find(names[j]);
 
-	// If vertex j is found in Edges[i] then return the weight of
-	// the edge, otherwise return null
-	if(e != null)
-		return new Integer(e.weight) ;
-	else 
-		return null;
-    }
-
+		// If vertex j is found in Edges[i] then return the weight of
+		// the edge, otherwise return null
+		if (e != null)
+			return new Integer(e.weight);
+		else
+			return null;
+	}
 
 	public void printVertices(PrintWriter os) {
-		for (String i : names) {
-			os.print(i + " ");
+		for (int i = 0; i < numVertices; i++) {
+			os.print(names[i] + " ");
 		}
 	} // end of printVertices()
 
@@ -372,9 +354,9 @@ public class AdjList extends AbstractAssocGraph {
 
 		for (int i = 0; i < numVertices; i++) {
 			int[] nbrs = getNeighbors(i);
-			for(int j =0;j<nbrs.length;j++)
-				System.out.println(names[i] + " " + names[nbrs[j]]);
-
+			for (int j = 0; j < nbrs.length; j++) {
+				os.println(names[i] + " " + names[nbrs[j]]);
+			}
 		}
 	} // end of printEdges()
 
@@ -477,11 +459,11 @@ public class AdjList extends AbstractAssocGraph {
 		public void add(Node newNode) {
 			if (mHead == null) {
 				mHead = newNode;
-				
+
 			} else {
 				newNode.setNext(mHead);
 				mHead = newNode;
-			
+
 			}
 		}
 
@@ -509,16 +491,6 @@ public class AdjList extends AbstractAssocGraph {
 			return true; // Found it
 		}
 
-		public void displayList() {
-			System.out.print("List (first-->last):");
-			Node current = mHead;
-			while (current != null) {
-				current.displayNode();
-				current = current.getNext();
-			}
-			System.out.println("");
-		}
-
 		public Node find(String label) {
 			// if empty linked list, then return null
 
@@ -533,6 +505,16 @@ public class AdjList extends AbstractAssocGraph {
 					current = current.getNext();
 			}
 			return current;
+		}
+
+		public void displayList() {
+			System.out.print("List (first-->last):");
+			Node current = mHead;
+			while (current != null) {
+				current.displayNode();
+				current = current.getNext();
+			}
+			System.out.println("");
 		}
 
 		public void clear() {

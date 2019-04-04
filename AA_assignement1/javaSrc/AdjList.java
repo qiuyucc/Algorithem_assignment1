@@ -345,6 +345,7 @@ public class AdjList extends AbstractAssocGraph {
 	}
 
 	public void printVertices(PrintWriter os) {
+		//when use PRINTWRITER to test, remember to flush and close.
 		for (int i = 0; i < numVertices; i++) {
 			os.print(names[i] + " ");
 		}

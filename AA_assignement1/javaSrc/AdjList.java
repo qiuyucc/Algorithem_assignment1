@@ -98,6 +98,7 @@ public class AdjList extends AbstractAssocGraph {
 			list = resize(list, 2 * numVertices + 1);
 		}
 		names[numVertices++] = vertLabel;
+		System.out.println("This vertex:"+ names[numVertices-1]);
 	} // end of addVertex()
 
 	public void addEdge(String srcLabel, String tarLabel, int weight) {
@@ -107,13 +108,14 @@ public class AdjList extends AbstractAssocGraph {
 		if (i == -1) {
 			System.out.print("addEdge failed: ");
 			System.out.print(srcLabel);
-			System.out.println("does not exist.");
+			System.out.println(" -does not exist.");
 			return;
 		}
-		if (this.list[i].find(newNode) == false) {
+		int j= getIndex(tarLabel);
+		if (j==-1) {
 			System.out.print("addEdge failed: ");
 			System.out.print(tarLabel);
-			System.out.println("does not exist.");
+			System.out.println(" -does not exist.");
 			return;
 		}
 		System.out.println("addEdge success");
@@ -475,9 +477,11 @@ public class AdjList extends AbstractAssocGraph {
 		public void add(Node newNode) {
 			if (mHead == null) {
 				mHead = newNode;
+				
 			} else {
 				newNode.setNext(mHead);
 				mHead = newNode;
+			
 			}
 		}
 

@@ -87,7 +87,7 @@ public class AdjList extends AbstractAssocGraph {
 
 	public void addVertex(String vertLabel) {
 		// check the vertex existed or not
-		if (getIndex(vertLabel) != -1) {
+		if (getIndex(vertLabel)!=-1) {
 			System.out.println("AddVertex: " + vertLabel);
 			System.out.println("Failed, vertex already exists.");
 			return;
@@ -141,7 +141,7 @@ public class AdjList extends AbstractAssocGraph {
 		}
 		if (this.list[i].find(tarLabel) == null) {
 			System.out.print("addEdge failed: ");
-			System.out.print("Edge");
+			System.out.print(tarLabel);
 			System.out.println(" does not exist.");
 			return EDGE_NOT_EXIST;
 		}
@@ -247,8 +247,16 @@ public class AdjList extends AbstractAssocGraph {
 			}
 
 			for (int x = 0; x < k; x++) {
-				MyPair newPair = new MyPair(nbTemp.get(x).getKey(), nbTemp.get(x).getValue());
-				neighbours.add(newPair);
+				if(x<=nbTemp.size()) 
+				{
+					MyPair newPair = new MyPair(nbTemp.get(x).getKey(), nbTemp.get(x).getValue());
+					neighbours.add(newPair);
+				}
+				else 
+				{
+					System.out.println("out of bound -- vertex number");
+				}
+				
 			}
 
 		} else {
@@ -266,7 +274,11 @@ public class AdjList extends AbstractAssocGraph {
 			}
 
 		}
-
+		/*for(int x=0; x<neighbours.size();x++) 
+		{
+			System.out.println(neighbours.get(x).getKey()+" "+ neighbours.get(x).getValue());
+		}*/
+		
 		return neighbours;
 	} // end of inNearestNeighbours()
 		// Find the tarLabel of this vertex
@@ -301,19 +313,29 @@ public class AdjList extends AbstractAssocGraph {
 				}
 			}
 			for (int x = 0; x < k; x++) {
-				MyPair newPair = new MyPair(nbrsTemp[x], list[i].find(nbrsTemp[x]).getWeight());
-				neighbours.add(newPair);
+				if(x<=nbrs.length-1) 
+				{
+					MyPair newPair = new MyPair(nbrsTemp[x], list[i].find(nbrsTemp[x]).getWeight());
+					neighbours.add(newPair);
+				}
+				else 
+				{
+					
+					System.out.println("out of bound");
+				}
 			}
 
 		} else { // get all the neighbor of specific vertex
-
+				
 			for (int j = 0; j < nbrs.length; j++) {
 				int tempWeight = getWeight(i, j);
+				
 				MyPair newPair = new MyPair(nbrs[j], tempWeight);
 				neighbours.add(newPair);
 			}
 		}
 
+			
 		return neighbours;
 	} // end of outNearestNeighbours()
 
@@ -322,32 +344,32 @@ public class AdjList extends AbstractAssocGraph {
 			System.out.print("getWeight failed: ");
 			System.out.print("index " + i);
 			System.out.println(" out of bounds.");
-			return null;
+			return -1;
 		}
 
 		if ((j < 0) || (j > numVertices - 1)) {
 			System.out.print("getWeight failed: ");
 			System.out.print("index " + j);
 			System.out.println(" out of bounds.");
-			return null;
+			return -1;
 		}
-
+		
 		// Look for vertex j in Edges[i]
 //System.out.println("Looking for " + names[j] + " in linked list " + i);
-		Node e = list[i].find(names[j]);
+		Node e = list[i].find(list[i].get(j));
 
 		// If vertex j is found in Edges[i] then return the weight of
 		// the edge, otherwise return null
 		if (e != null)
-			return new Integer(e.weight);
+			return e.getWeight();
 		else
-			return null;
+			return -1;
 	}
 
 	public void printVertices(PrintWriter os) {
 		//when use PRINTWRITER to test, remember to flush and close.
 		for (int i = 0; i < numVertices; i++) {
-			os.print(names[i] + " ");
+			os.println(names[i] + " ");
 		}
 	} // end of printVertices()
 
@@ -356,7 +378,7 @@ public class AdjList extends AbstractAssocGraph {
 		for (int i = 0; i < numVertices; i++) {
 			int[] nbrs = getNeighbors(i);
 			for (int j = 0; j < nbrs.length; j++) {
-				os.println(names[i] + " " + names[nbrs[j]]);
+				os.println(names[i] + " " + names[nbrs[j]]+" "+list[i].find(names[nbrs[j]]).getWeight());
 			}
 		}
 	} // end of printEdges()
@@ -583,6 +605,34 @@ public class AdjList extends AbstractAssocGraph {
 		 * The funtion returns a copy of the keys (Strings) in the list in an array, but
 		 * with items in reverse order
 		 */
+		public String get(int index)
+		{
+		
+			// Initialize current and initialize a counter
+			Node current = mHead;
+			int count = 0;
+
+			// Scan as many nodes as specified by index
+			while(count < index)
+			{
+				// check to make sure that we have not scanned
+				// past the end of the list; if not move 
+				// current and increment counter
+				if(current != null)
+				{
+					current = current.getNext();
+					count++;
+				}
+				else
+					return null;
+			}
+
+			// We have reached index
+	       		if(current != null)
+				return current.mValue;
+	                else
+	                	return null;
+		}	
 		public String[] copyIntoArray() {
 			String[] temp = new String[mLength];
 			Node current = mHead;

@@ -47,7 +47,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			incMatrix[Ys][0] = vertLabel;
 			System.out.println("This vertex added: " + incMatrix[Ys][0]);
 			Ys++;
-			//System.out.println(Ys);
+			// System.out.println(Ys);
 		}
 	} // end of addVertex()
 
@@ -56,7 +56,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		int posWeight = weight;
 		int negWeight = -weight;
 		if (srcLabel != tarLabel) {
-			
+
 			int src = getIndex(srcLabel);
 			if (src == -1) {
 				System.out.println("AddEdge: " + srcLabel);
@@ -64,6 +64,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 				return;
 			}
 			int tar = getIndex(tarLabel);
+			
 			if (tar == -1) {
 				System.out.println("AddEdge: " + tarLabel);
 				System.out.println("Failed, vertex already exists.");
@@ -73,11 +74,12 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 				index = findColumnIndex(incMatrix, srcLabel, tarLabel);
 				incMatrix[src][index] = Integer.toString(posWeight);
 				incMatrix[tar][index] = Integer.toString(negWeight);
+				
 			}
 			if (tar < src) {
 				index = findColumnIndex(incMatrix, tarLabel, srcLabel);
-				incMatrix[src][index] = Integer.toString(negWeight);
-				incMatrix[tar][index] = Integer.toString(posWeight);
+				incMatrix[tar][index] = Integer.toString(negWeight);
+				incMatrix[src][index] = Integer.toString(posWeight);
 			}
 
 		} else {
@@ -89,7 +91,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 	public int getEdgeWeight(String srcLabel, String tarLabel) {
 		int index, weight = 0;
 		int src = getIndex(srcLabel);
-		if (srcLabel == tarLabel) {
+		if (srcLabel != tarLabel) {
 			if (src == -1) {
 				System.out.println("getEdgeWeight: " + srcLabel);
 				System.out.println("Failed, vertex not exists.");
@@ -107,11 +109,12 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			}
 			if (src > tar) {
 				index = findColumnIndex(incMatrix, tarLabel, srcLabel);
-				weight = Integer.parseInt(incMatrix[tar][index]);
+				weight = Integer.parseInt(incMatrix[src][index]);
 			}
 		} else {
 			System.out.println("No self connected edge in this case!");
 		}
+		System.out.println(weight);
 		return weight;
 
 	} // end of existEdge()
@@ -121,7 +124,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		int src = getIndex(srcLabel);
 		int posWeight = weight;
 		int negWeight = -weight;
-		if (srcLabel == tarLabel) {
+		if (srcLabel != tarLabel) {
 			if (src == -1) {
 				System.out.println("update: " + srcLabel);
 				System.out.println("Failed, vertex doesnt exists.");
@@ -140,13 +143,14 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			}
 			if (src > tar) {
 				index = findColumnIndex(incMatrix, tarLabel, srcLabel);
-				incMatrix[src][index] = Integer.toString(negWeight);
-				incMatrix[tar][index] = Integer.toString(posWeight);
+				incMatrix[src][index] = Integer.toString(posWeight);
+				incMatrix[tar][index] = Integer.toString(negWeight);
 				System.out.println("updated success");
 			}
 		} else {
 			System.out.println("No self connected edge in this case!");
 		}
+			
 	} // end of updateWeightEdge()
 
 	public void removeVertex(String vertLabel) {
@@ -298,23 +302,24 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 
 	public void printVertices(PrintWriter os) {
 		for (int i = 0; i < incMatrix.length; i++) {
-			os.print(incMatrix[i][0] + "\n");
+			os.print(incMatrix[i][0] + " ");
 		}
 	} // end of printVertices()
 
 	public void printEdges(PrintWriter os) {
-
 		for (int i = 0; i < incMatrix.length; i++) {
-			for (int x = 1; x <= incMatrix[i].length; x++) {
-				if (isInteger(incMatrix[i][x])) {
+			for (int x = 1; x < incMatrix[i].length; x++) {
+				if (isInteger(incMatrix[i][x])&&Integer.parseInt(incMatrix[i][x])>0) {
 					for (int z = 0; z < incMatrix.length; z++) {
-						if (isInteger(incMatrix[z][x])) {
+						if(isInteger(incMatrix[z][x])) 
+						{
 							int weight1 = Integer.parseInt(incMatrix[i][x]);
 							int weight2 = Integer.parseInt(incMatrix[z][x]);
-							if (weight1 > weight2)
-								System.out.println(incMatrix[i][0] + " " + incMatrix[z][0] + " " + weight1);
-							else
-								System.out.println(incMatrix[z][0] + " " + incMatrix[i][0] + " " + weight2);
+							//System.out.println(weight1+" "+weight2);
+							if (weight1 + weight2 == 0) {
+								System.out.println(incMatrix[i][0] +" "+ incMatrix[z][0]+" "+ weight1);
+									
+							}
 						}
 					}
 				}
@@ -348,7 +353,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 				for (int y = 0; y < array[i].length; y++) {
 					// System.out.println(i + " " + y);
 					temp[i][y] = array[i][y];
-					//System.out.println(array[1][0]);
+					// System.out.println(array[1][0]);
 
 				}
 			}

@@ -14,18 +14,18 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 	/**
 	 * Contructs empty graph.
 	 */
-	private int rows;
-	private int cols;
+	private int Xs;
+	private int Ys;
 	private String[][] incMatrix;
 
 	public IncidenceMatrix() {
 		this(0, 0);
 	} // end of IncidentMatrix()
 
-	public IncidenceMatrix(int cols, int rows) {
-		this.cols = cols;
-		this.rows = rows;
-		incMatrix = new String[cols + 1][rows + 1];
+	public IncidenceMatrix(int Ys, int Xs) {
+		this.Ys = Ys;
+		this.Xs = Xs;
+		incMatrix = new String[Ys + 1][Xs + 1];
 	}
 
 	public void addVertex(String vertLabel) {
@@ -35,22 +35,19 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			System.out.println("Failed, vertex already exists.");
 			return;
 		}
-		if(cols ==0) 
-		{
-			incMatrix[cols][0] = vertLabel;
-			System.out.println("This vertex added: " + incMatrix[cols][0]);
-			cols++;
-		}else {
-		System.out.println(cols);
-		System.out.println(incMatrix.length);
-		// if array of vertex is full, we have to expand it and Edges
-		if (incMatrix.length  == cols) {
-			incMatrix = resize(incMatrix, cols);
-			System.out.println(cols + "test1");
-			System.out.println(cols);
-		}
-		incMatrix[cols][0] = vertLabel;
-		System.out.println("This vertex added: " + incMatrix[cols][0]);
+		if (Ys == 0) {
+			incMatrix[Ys][0] = vertLabel;
+			System.out.println("This vertex added: " + incMatrix[Ys][0]);
+			Ys++;
+		} else {
+			// if array of vertex is full, we have to expand it and Edges
+			if (incMatrix.length == Ys) {
+				incMatrix = resize(incMatrix, Ys);
+			}
+			incMatrix[Ys][0] = vertLabel;
+			System.out.println("This vertex added: " + incMatrix[Ys][0]);
+			Ys++;
+			//System.out.println(Ys);
 		}
 	} // end of addVertex()
 
@@ -58,7 +55,8 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		int index;
 		int posWeight = weight;
 		int negWeight = -weight;
-		if (srcLabel == tarLabel) {
+		if (srcLabel != tarLabel) {
+			
 			int src = getIndex(srcLabel);
 			if (src == -1) {
 				System.out.println("AddEdge: " + srcLabel);
@@ -177,7 +175,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		}
 
 		// delete the whole row of the matrix
-		cols--;
+		Ys--;
 		removeRow(incMatrix, i);
 		//
 	} // end of removeVertex()
@@ -332,27 +330,40 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		return -1;
 	}
 
-	public String[][] resize(String[][] array, int newCols) {
+	public String[][] resize(String[][] array, int newYs) {
 
-		String[][] temp = new String[newCols][(newCols * (newCols - 1)) / 2];
-		if (newCols == 1) {
-			 temp = new String[2][2];
+		String[][] temp;
+		if (newYs == 1) {
+			temp = new String[2][2];
+			for (int i = 0; i < array.length; i++) {
+				for (int y = 0; y < array[i].length; y++) {
+
+					temp[i][y] = array[i][y];
+
+				}
+			}
+		} else if (newYs == 2) {
+			temp = new String[3][4];
 			for (int i = 0; i < array.length; i++) {
 				for (int y = 0; y < array[i].length; y++) {
 					// System.out.println(i + " " + y);
 					temp[i][y] = array[i][y];
-					return temp;
+					//System.out.println(array[1][0]);
+
 				}
-		}
-		}	
-		// Copy the previous array to new array
-		for (int i = 0; i < array.length; i++) {
-			for (int y = 0; y < array[i].length; y++) {
-				// System.out.println(i + " " + y);
-				temp[i][y] = array[i][y];
 			}
+		} else {
+			temp = new String[newYs + 1][(newYs * (newYs + 1)) / 2];
+			for (int i = 0; i < array.length; i++) {
+				for (int y = 0; y < array[i].length; y++) {
+					// System.out.println(i + " " + y);
+					temp[i][y] = array[i][y];
+				}
+			}
+
 		}
 		return temp;
+
 	}
 
 	// custom alogrithem for the index for edge, which is the second D for 2D array(

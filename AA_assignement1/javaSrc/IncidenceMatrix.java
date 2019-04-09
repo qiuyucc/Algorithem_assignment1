@@ -1,5 +1,4 @@
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -36,13 +35,23 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			System.out.println("Failed, vertex already exists.");
 			return;
 		}
-
+		if(cols ==0) 
+		{
+			incMatrix[cols][0] = vertLabel;
+			System.out.println("This vertex added: " + incMatrix[cols][0]);
+			cols++;
+		}else {
+		System.out.println(cols);
+		System.out.println(incMatrix.length);
 		// if array of vertex is full, we have to expand it and Edges
-		if (incMatrix.length == cols) {
-			incMatrix = resize(incMatrix, cols++);
+		if (incMatrix.length  == cols) {
+			incMatrix = resize(incMatrix, cols);
+			System.out.println(cols + "test1");
+			System.out.println(cols);
 		}
-		incMatrix[cols++][0] = vertLabel;
-		System.out.println("This vertex added: " + incMatrix[cols - 1][0]);
+		incMatrix[cols][0] = vertLabel;
+		System.out.println("This vertex added: " + incMatrix[cols][0]);
+		}
 	} // end of addVertex()
 
 	public void addEdge(String srcLabel, String tarLabel, int weight) {
@@ -291,7 +300,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 
 	public void printVertices(PrintWriter os) {
 		for (int i = 0; i < incMatrix.length; i++) {
-			os.print(incMatrix[i][0] + " ");
+			os.print(incMatrix[i][0] + "\n");
 		}
 	} // end of printVertices()
 
@@ -326,12 +335,20 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 	public String[][] resize(String[][] array, int newCols) {
 
 		String[][] temp = new String[newCols][(newCols * (newCols - 1)) / 2];
-		int smallerCols = newCols;
-		if (array.length < newCols)
-			smallerCols = array.length;
-
+		if (newCols == 1) {
+			 temp = new String[2][2];
+			for (int i = 0; i < array.length; i++) {
+				for (int y = 0; y < array[i].length; y++) {
+					// System.out.println(i + " " + y);
+					temp[i][y] = array[i][y];
+					return temp;
+				}
+		}
+		}	
+		// Copy the previous array to new array
 		for (int i = 0; i < array.length; i++) {
-			for (int y = 0; y < array.length; y++) {
+			for (int y = 0; y < array[i].length; y++) {
+				// System.out.println(i + " " + y);
 				temp[i][y] = array[i][y];
 			}
 		}
@@ -347,8 +364,8 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		int src1 = getIndex(src);
 		int tar1 = getIndex(tar);
 		int num = array.length;
-		for (int x = 1; x <= src1; x++) {
-			index += x * (num - 1);
+		for (int x = 0; x < src1; x++) {
+			index += num - 1;
 			num--;
 		}
 		index = index + (tar1 - src1);

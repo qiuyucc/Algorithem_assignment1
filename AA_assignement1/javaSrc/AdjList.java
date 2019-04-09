@@ -378,6 +378,8 @@ public class AdjList extends AbstractAssocGraph {
 		for (int i = 0; i < numVertices; i++) {
 			int[] nbrs = getNeighbors(i);
 			for (int j = 0; j < nbrs.length; j++) {
+				if(list[i].find(names[nbrs[j]]).getWeight()==0)
+					continue;
 				os.println(names[i] + " " + names[nbrs[j]]+" "+list[i].find(names[nbrs[j]]).getWeight());
 			}
 		}

@@ -64,7 +64,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 				return;
 			}
 			int tar = getIndex(tarLabel);
-			
+
 			if (tar == -1) {
 				System.out.println("AddEdge: " + tarLabel);
 				System.out.println("Failed, vertex already exists.");
@@ -74,7 +74,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 				index = findColumnIndex(incMatrix, srcLabel, tarLabel);
 				incMatrix[src][index] = Integer.toString(posWeight);
 				incMatrix[tar][index] = Integer.toString(negWeight);
-				
+
 			}
 			if (tar < src) {
 				index = findColumnIndex(incMatrix, tarLabel, srcLabel);
@@ -150,25 +150,38 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		} else {
 			System.out.println("No self connected edge in this case!");
 		}
-			
+
 	} // end of updateWeightEdge()
 
 	public void removeVertex(String vertLabel) {
+		int columIndex =0;
 		int i = getIndex(vertLabel);
 		if (i == -1) {
 			System.out.print("remove vertex:" + vertLabel);
 			System.out.println("does not exist");
 		}
 
+		/*
+		 * //Testing for(int x=0;x<incMatrix.length;x++) { for(int
+		 * y=0;y<incMatrix[x].length;y++) { System.out.print(incMatrix[x][y]+" "); }
+		 * System.out.println("\n"); }
+		 * System.out.println("--------------------------------------------"); //Testing
+		 */
 		int index = findstartIndexForVertex(incMatrix, vertLabel);
 		// delete the weight in the 2D array which relate with VertLabel is it's source
 		for (int x = i; x < incMatrix.length; x++) {
-			for (int y = 0; x < incMatrix.length - i - 1; y++) {
+			for (int y = 0; y < incMatrix.length - i - 1; y++) {
 				incMatrix[x][index + y] = null;
 			}
 		}
 
-		// delte the weight in the 2D arary which relate with VertLabel is it's endpoint
+		/*
+		 * //Testing for(int x=0;x<incMatrix.length;x++) { for(int
+		 * y=0;y<incMatrix[x].length;y++) { System.out.print(incMatrix[x][y]+" "); }
+		 * System.out.println("\n"); }
+		 * System.out.println("--------------------------------------------"); //Testing
+		 * 
+		 */ // delte the weight in the 2D arary which relate with VertLabel is it's endpoint
 		/*
 		 * only need to check the vertex before
 		 */
@@ -177,10 +190,46 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			incMatrix[j][indexEnd] = null;
 			incMatrix[i][indexEnd] = null;
 		}
+		/*for (int x = 0; x < index; x++) {
+		// calculate the which column should be deleted
+		columIndex = findColumnIndex(array, array[x][0], array[index][0]);
+		System.out.print(columIndex);
+		for (int z = 0; z < array[x].length; z++) {
+			//newIncMatrix[z][columIndex] = array[z][columIndex + 1];
+			for(int j=0;j<) {
+				newIncMatrix[z][columIndex+j] = array[z][columIndex + 1+j];
+			}
+		}
 
-		// delete the whole row of the matrix
+	}System.out.print("done");
+*/		
+		// delete the first vertex, move the column
+		if(i==0) 
+		{
+			for(int z=0; z<incMatrix.length-1;z++) 
+			{
+				incMatrix = removeCol(incMatrix,1);
+			}
+		}else 
+		{	int count =0;
+			int tempColumIndex = index;
+			//System.out.println(tempColumIndex);
+			for(int k=0;k<i;k++) 
+			{	
+			
+				// calculate the which column should be deleted
+				columIndex = findColumnIndex(incMatrix, incMatrix[k][0], incMatrix[i][0]);
+				incMatrix = removeCol(incMatrix,columIndex-count);
+				count ++;
+			}
+			for(int x=0;x<incMatrix.length-1-i;x++) 
+			{
+				incMatrix =removeCol(incMatrix,tempColumIndex-i);
+			}
+		}
+
+		incMatrix = removeRow(incMatrix, i);
 		Ys--;
-		removeRow(incMatrix, i);
 		//
 	} // end of removeVertex()
 
@@ -309,16 +358,15 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 	public void printEdges(PrintWriter os) {
 		for (int i = 0; i < incMatrix.length; i++) {
 			for (int x = 1; x < incMatrix[i].length; x++) {
-				if (isInteger(incMatrix[i][x])&&Integer.parseInt(incMatrix[i][x])>0) {
+				if (isInteger(incMatrix[i][x]) && Integer.parseInt(incMatrix[i][x]) > 0) {
 					for (int z = 0; z < incMatrix.length; z++) {
-						if(isInteger(incMatrix[z][x])) 
-						{
+						if (isInteger(incMatrix[z][x])) {
 							int weight1 = Integer.parseInt(incMatrix[i][x]);
 							int weight2 = Integer.parseInt(incMatrix[z][x]);
-							//System.out.println(weight1+" "+weight2);
+							// System.out.println(weight1+" "+weight2);
 							if (weight1 + weight2 == 0) {
-								System.out.println(incMatrix[i][0] +" "+ incMatrix[z][0]+" "+ weight1);
-									
+								System.out.println(incMatrix[i][0] + " " + incMatrix[z][0] + " " + weight1);
+
 							}
 						}
 					}
@@ -358,7 +406,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 				}
 			}
 		} else {
-			temp = new String[newYs + 1][(newYs * (newYs + 1)) / 2];
+			temp = new String[newYs + 1][(newYs * (newYs + 1)) / 2 + 1];
 			for (int i = 0; i < array.length; i++) {
 				for (int y = 0; y < array[i].length; y++) {
 					// System.out.println(i + " " + y);
@@ -394,11 +442,33 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		int index = 0;
 		int vert = getIndex(vertex);
 		int num = array.length;
-		for (int x = 1; x <= vert; x++) {
-			index += x * (num - 1);
+		for (int x = 0; x < vert; x++) {
+			index += num - 1;
 			num--;
 		}
 		return index + 1;
+	}
+	
+	private String[][] removeCol(String [][] array, int colRemove)
+	{
+	    int row = array.length;
+	    int col = array[0].length;
+
+	    String [][] newArray = new String[row][col-1]; //new Array will have one column less
+
+
+	    for(int i = 0; i < row; i++)
+	    {
+	        for(int j = 0,currColumn=0; j < col; j++)
+	        {
+	            if(j != colRemove)
+	            {
+	                newArray[i][currColumn++] = array[i][j];
+	            }
+	        }
+	    }
+
+	    return newArray;
 	}
 
 	public String[][] removeRow(String[][] array, int index) {
@@ -406,55 +476,33 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		int columIndex = 0;
 		int startIndex = 0;
 		int num = array.length;
-
-		// deal with column first. If it is first vertex, the 2D array can be removed
-		// directly
-		if (index == 0) {
-			for (int x = 0; x < array.length; x++) {
-				for (int y = 1; y < array[x].length; y++) {
-					newIncMatrix[x][y] = array[x][y + array.length - 1];
+		
+		/*// Testing
+				for (int x = 0; x < newIncMatrix.length; x++) {
+					for (int y = 0; y < newIncMatrix[x].length; y++) {
+						System.out.print(newIncMatrix[x][y] + " ");
+					}
+					System.out.println("\n");
 				}
-			}
-		} else { // if the vertex is not the first, the 2D array should be moved many times based
-					// on index of vertex
-					// move the column when the specific vertex is end point
-			for (int x = 0; x < index; x++) {
-				// calculate the which column should be deleted
-				columIndex += (x + 1) * (index - x);
-				for (int z = 0; z < array[z].length; x++) {
-					newIncMatrix[z][columIndex] = array[z][columIndex + 1];
-				}
-
-			}
-
-			for (int x = 1; x <= index; x++) {
-				startIndex += x * (num - 1);
-				num--;
-			}
-			// get the start index
-			startIndex = startIndex + 1;
-			// move the column when the specific vertex is start points
-
-			for (int z = 0; z < array.length; z++) {
-				// how many edges it has for the start points
-				for (int numOfEdgeOfVertex = array.length - 2 - index; numOfEdgeOfVertex >= 0; numOfEdgeOfVertex--) {
-					newIncMatrix[z][startIndex + numOfEdgeOfVertex] = array[z][startIndex + numOfEdgeOfVertex + 1];
-				}
-
-			}
-		}
-
+				System.out.println("--------------------------------------------");
+				// Testing
+*/
 		// deal with row, move row
 		// if the row is the last one
+		int count = 0;
 		if (index == array.length - 1) {
-			for (int x = 0; x < array.length; x++) {
+			for (int x = 0; x < array[index].length; x++) {
 				newIncMatrix[index][x] = null;
 			}
 		} else {
-			for (int x = index; x < array.length - 1; x++) {
-				for (int y = 0; x < array[index + 1].length; y++) {
-					newIncMatrix[index][y] = array[index + 1][y];
+
+			for (int x = 0; x < array.length; x++) {
+				for (int c = 0; c < array[0].length; c++) {
+					if (index == x)
+						x++;
+					newIncMatrix[count][c] = array[x][c];
 				}
+				count++;
 			}
 		}
 		return newIncMatrix;

@@ -240,13 +240,14 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 				for (int i = 0; i < incMatrix.length; i++) {
 					if (isInteger(incMatrix[i][tempIndex])) {
 						int weight = Integer.parseInt(incMatrix[i][tempIndex]);
-						if (weight > 0 && x == index) {
+						if (weight < 0 && i == index) {
 							for (int z = 0; z < incMatrix.length; z++) {
 								if (isInteger(incMatrix[z][tempIndex])) {
 									int tarWeight = Integer.parseInt(incMatrix[z][tempIndex]);
 									if (weight + tarWeight == 0) {
-										MyPair mp = new MyPair(incMatrix[i][0], weight);
+										MyPair mp = new MyPair(incMatrix[z][0], -weight);
 										neighbours.add(mp);
+										
 									}
 								}
 							}
@@ -273,6 +274,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 									{
 										MyPair mp = new MyPair(incMatrix[z][0], -weight);
 										neighbours.add(mp);
+										
 									}
 								}
 							}
@@ -318,38 +320,89 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		if (k > incMatrix.length || k < -1) {
 			System.out.println("out of bound");
 		}
-		for (int x = 0; x < index; x++) {
-			tempIndex += findColumnIndex(incMatrix, incMatrix[x][0], incMatrix[index][0]);
-			for (int i = 0; i < incMatrix.length; i++) {
-				if (isInteger(incMatrix[i][tempIndex])) {
-					int weight = Integer.parseInt(incMatrix[i][tempIndex]);
-					if (weight < 0) {
-						MyPair mp = new MyPair(incMatrix[i][0], -weight);
-						neighbours.add(mp);
+
+		if (index == 0) {
+			tempIndex = 1;
+			for (int x = 0; x < incMatrix.length; x++) {
+				for (int i = tempIndex; i < incMatrix.length - 1; i++) {
+					if (isInteger(incMatrix[x][i])) {
+						int weight = Integer.parseInt(incMatrix[x][i]);
+						if (weight > 0 && x == index) {
+							for (int z = 0; z < incMatrix.length; z++) {
+								if (isInteger(incMatrix[i][z])) {
+									int tarWeight = Integer.parseInt(incMatrix[i][z]);
+									if (tarWeight + weight == 0) {
+										MyPair mp = new MyPair(incMatrix[z][0], weight);
+										neighbours.add(mp);
+									}
+								}
+
+							}
+
+						}
+					}
+				}
+			}
+		} else { // when specific vertex is end points
+			for (int x = 0; x < index; x++) {
+				tempIndex = findColumnIndex(incMatrix, incMatrix[x][0], incMatrix[index][0]);
+				for (int i = 0; i < incMatrix.length; i++) {
+					if (isInteger(incMatrix[i][tempIndex])) {
+						int weight = Integer.parseInt(incMatrix[i][tempIndex]);
+						if (weight > 0 && i == index) {
+							for (int z = 0; z < incMatrix.length; z++) {
+								if (isInteger(incMatrix[z][tempIndex])) {
+									int tarWeight = Integer.parseInt(incMatrix[z][tempIndex]);
+									if (weight + tarWeight == 0) {
+										MyPair mp = new MyPair(incMatrix[z][0], weight);
+										neighbours.add(mp);
+									}
+								}
+							}
+
+						}
+					}
+				}
+			}
+
+			// Search for the second D for 2D array, where startpoints is specific vertex,
+			// but the weight number is negative
+			startIndex = findstartIndexForVertex(incMatrix, vertLabel);
+			for (int x = index; x < incMatrix.length; x++) { // how many edges it has for the start points
+				for (int i = 0 ;i< incMatrix.length - 1 - index; i++) {
+					if (isInteger(incMatrix[x][i+startIndex])) {
+						int weight = Integer.parseInt(incMatrix[x][i+startIndex]);
+						if (weight > 0 && x==index) {
+							for(int z=index;z<incMatrix.length;z++) 
+							{
+								if(isInteger(incMatrix[z][i+startIndex])) 
+								{
+									int tarWeight = Integer.parseInt(incMatrix[z][i+startIndex]);
+									if(weight+tarWeight==0) 
+									{
+										MyPair mp = new MyPair(incMatrix[z][0], weight);
+										neighbours.add(mp);
+										
+									}
+								}
+							}
+						
+							// System.out.println(mp.getValue() + " "+mp.getKey());
+						}
 					}
 				}
 			}
 		}
-		// Search for the second D for 2D array, where startpoints is specific vertex,
-		// but the weight number is negative
-		startIndex = findstartIndexForVertex(incMatrix, vertLabel);
-		for (int z = 0; z < incMatrix.length; z++) { // how many edges it has for the start points
-			for (int y = incMatrix.length - 2 - index; y >= 0; y--) {
-				if (isInteger(incMatrix[z][y])) {
-					int weight = Integer.parseInt(incMatrix[z][y]);
-					if (weight > 0) {
-						MyPair mp = new MyPair(incMatrix[z][0], weight);
-						neighbours.add(mp);
-					}
+		// bubble sort --sort neighours
+		for (int i = 0; i < neighbours.size(); i++) {
+			for (int j = 0; j < neighbours.size() - 1; j++) {
+				if (neighbours.get(j).getValue() < neighbours.get(j + 1).getValue()) {
+					Collections.sort(neighbours, new ByWeightComparator());
 				}
 			}
 		}
 
-		if (k > incMatrix.length || k < -1) {
-			System.out.println("out of bound");
-		}
-
-		if (k == -1) {
+		if (k == -1 || k > neighbours.size()) {
 			for (int i = 0; i < neighbours.size(); i++) {
 				System.out.println(neighbours.get(i).getKey() + " " + neighbours.get(i).getValue());
 			}
@@ -357,7 +410,9 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			for (int i = 0; i < k; i++) {
 				System.out.println(neighbours.get(i).getKey() + " " + neighbours.get(i).getValue());
 			}
+
 		}
+
 		// Implement me!
 
 		return neighbours;

@@ -154,19 +154,13 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 	} // end of updateWeightEdge()
 
 	public void removeVertex(String vertLabel) {
-		int columIndex =0;
+		int columIndex = 0;
 		int i = getIndex(vertLabel);
 		if (i == -1) {
 			System.out.print("remove vertex:" + vertLabel);
 			System.out.println("does not exist");
 		}
 
-		/*
-		 * //Testing for(int x=0;x<incMatrix.length;x++) { for(int
-		 * y=0;y<incMatrix[x].length;y++) { System.out.print(incMatrix[x][y]+" "); }
-		 * System.out.println("\n"); }
-		 * System.out.println("--------------------------------------------"); //Testing
-		 */
 		int index = findstartIndexForVertex(incMatrix, vertLabel);
 		// delete the weight in the 2D array which relate with VertLabel is it's source
 		for (int x = i; x < incMatrix.length; x++) {
@@ -175,56 +169,30 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			}
 		}
 
-		/*
-		 * //Testing for(int x=0;x<incMatrix.length;x++) { for(int
-		 * y=0;y<incMatrix[x].length;y++) { System.out.print(incMatrix[x][y]+" "); }
-		 * System.out.println("\n"); }
-		 * System.out.println("--------------------------------------------"); //Testing
-		 * 
-		 */ // delte the weight in the 2D arary which relate with VertLabel is it's endpoint
-		/*
-		 * only need to check the vertex before
-		 */
 		for (int j = 0; j < i; j++) {
 			int indexEnd = findColumnIndex(incMatrix, incMatrix[j][0], vertLabel);
 			incMatrix[j][indexEnd] = null;
 			incMatrix[i][indexEnd] = null;
 		}
-		/*for (int x = 0; x < index; x++) {
-		// calculate the which column should be deleted
-		columIndex = findColumnIndex(array, array[x][0], array[index][0]);
-		System.out.print(columIndex);
-		for (int z = 0; z < array[x].length; z++) {
-			//newIncMatrix[z][columIndex] = array[z][columIndex + 1];
-			for(int j=0;j<) {
-				newIncMatrix[z][columIndex+j] = array[z][columIndex + 1+j];
-			}
-		}
 
-	}System.out.print("done");
-*/		
 		// delete the first vertex, move the column
-		if(i==0) 
-		{
-			for(int z=0; z<incMatrix.length-1;z++) 
-			{
-				incMatrix = removeCol(incMatrix,1);
+		if (i == 0) {
+			for (int z = 0; z < incMatrix.length - 1; z++) {
+				incMatrix = removeCol(incMatrix, 1);
 			}
-		}else 
-		{	int count =0;
+		} else {
+			int count = 0;
 			int tempColumIndex = index;
-			//System.out.println(tempColumIndex);
-			for(int k=0;k<i;k++) 
-			{	
-			
+			// System.out.println(tempColumIndex);
+			for (int k = 0; k < i; k++) {
+
 				// calculate the which column should be deleted
 				columIndex = findColumnIndex(incMatrix, incMatrix[k][0], incMatrix[i][0]);
-				incMatrix = removeCol(incMatrix,columIndex-count);
-				count ++;
+				incMatrix = removeCol(incMatrix, columIndex - count);
+				count++;
 			}
-			for(int x=0;x<incMatrix.length-1-i;x++) 
-			{
-				incMatrix =removeCol(incMatrix,tempColumIndex-i);
+			for (int x = 0; x < incMatrix.length - 1 - i; x++) {
+				incMatrix = removeCol(incMatrix, tempColumIndex - i);
 			}
 		}
 
@@ -240,29 +208,77 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		int startIndex = 0;
 		// Search for the Search D for 2D array to find, ensure the weight number is
 		// postive
+		if (k > incMatrix.length || k < -1) {
+			System.out.println("out of bound");
+		}
 
-		for (int x = 0; x < index; x++) {
-			tempIndex += (x + 1) * (index - x);
-			for (int i = 0; i < incMatrix.length; i++) {
-				if (isInteger(incMatrix[i][tempIndex])) {
-					int weight = Integer.parseInt(incMatrix[i][tempIndex]);
-					if (weight > 0) {
-						MyPair mp = new MyPair(incMatrix[i][0], weight);
-						neighbours.add(mp);
+		if (index == 0) {
+			tempIndex = 1;
+			for (int x = 0; x < incMatrix.length; x++) {
+				for (int i = tempIndex; i < incMatrix.length - 1; i++) {
+					if (isInteger(incMatrix[x][i])) {
+						int weight = Integer.parseInt(incMatrix[x][i]);
+						if (weight < 0 && x == index) {
+							for (int z = 0; z < incMatrix.length; z++) {
+								if (isInteger(incMatrix[i][z])) {
+									int tarWeight = Integer.parseInt(incMatrix[i][z]);
+									if (tarWeight + weight == 0) {
+										MyPair mp = new MyPair(incMatrix[z][0], -weight);
+										neighbours.add(mp);
+									}
+								}
+
+							}
+
+						}
 					}
 				}
 			}
-		}
-		// Search for the second D for 2D array, where startpoints is specific vertex,
-		// but the weight number is negative
-		startIndex = findstartIndexForVertex(incMatrix, vertLabel);
-		for (int z = 0; z < incMatrix.length; z++) { // how many edges it has for the start points
-			for (int y = incMatrix.length - 2 - index; y >= 0; y--) {
-				if (isInteger(incMatrix[z][y])) {
-					int weight = Integer.parseInt(incMatrix[z][y]);
-					if (weight < 0) {
-						MyPair mp = new MyPair(incMatrix[z][0], -weight);
-						neighbours.add(mp);
+		} else { // when specific vertex is end points
+			for (int x = 0; x < index; x++) {
+				tempIndex = findColumnIndex(incMatrix, incMatrix[x][0], incMatrix[index][0]);
+				for (int i = 0; i < incMatrix.length; i++) {
+					if (isInteger(incMatrix[i][tempIndex])) {
+						int weight = Integer.parseInt(incMatrix[i][tempIndex]);
+						if (weight > 0 && x == index) {
+							for (int z = 0; z < incMatrix.length; z++) {
+								if (isInteger(incMatrix[z][tempIndex])) {
+									int tarWeight = Integer.parseInt(incMatrix[z][tempIndex]);
+									if (weight + tarWeight == 0) {
+										MyPair mp = new MyPair(incMatrix[i][0], weight);
+										neighbours.add(mp);
+									}
+								}
+							}
+
+						}
+					}
+				}
+			}
+
+			// Search for the second D for 2D array, where startpoints is specific vertex,
+			// but the weight number is negative
+			startIndex = findstartIndexForVertex(incMatrix, vertLabel);
+			for (int x = index; x < incMatrix.length; x++) { // how many edges it has for the start points
+				for (int i = 0 ;i< incMatrix.length - 1 - index; i++) {
+					if (isInteger(incMatrix[x][i+startIndex])) {
+						int weight = Integer.parseInt(incMatrix[x][i+startIndex]);
+						if (weight < 0 && x==index) {
+							for(int z=index;z<incMatrix.length;z++) 
+							{
+								if(isInteger(incMatrix[z][i+startIndex])) 
+								{
+									int tarWeight = Integer.parseInt(incMatrix[z][i+startIndex]);
+									if(weight+tarWeight==0) 
+									{
+										MyPair mp = new MyPair(incMatrix[z][0], -weight);
+										neighbours.add(mp);
+									}
+								}
+							}
+						
+							// System.out.println(mp.getValue() + " "+mp.getKey());
+						}
 					}
 				}
 			}
@@ -275,11 +291,8 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 				}
 			}
 		}
-		if (k > incMatrix.length || k < -1) {
-			System.out.println("out of bound");
-		}
 
-		if (k == -1) {
+		if (k == -1 || k > neighbours.size()) {
 			for (int i = 0; i < neighbours.size(); i++) {
 				System.out.println(neighbours.get(i).getKey() + " " + neighbours.get(i).getValue());
 			}
@@ -287,6 +300,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			for (int i = 0; i < k; i++) {
 				System.out.println(neighbours.get(i).getKey() + " " + neighbours.get(i).getValue());
 			}
+
 		}
 
 		// Implement me!
@@ -305,7 +319,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			System.out.println("out of bound");
 		}
 		for (int x = 0; x < index; x++) {
-			tempIndex += (x + 1) * (index - x);
+			tempIndex += findColumnIndex(incMatrix, incMatrix[x][0], incMatrix[index][0]);
 			for (int i = 0; i < incMatrix.length; i++) {
 				if (isInteger(incMatrix[i][tempIndex])) {
 					int weight = Integer.parseInt(incMatrix[i][tempIndex]);
@@ -448,27 +462,22 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		}
 		return index + 1;
 	}
-	
-	private String[][] removeCol(String [][] array, int colRemove)
-	{
-	    int row = array.length;
-	    int col = array[0].length;
 
-	    String [][] newArray = new String[row][col-1]; //new Array will have one column less
+	private String[][] removeCol(String[][] array, int colRemove) {
+		int row = array.length;
+		int col = array[0].length;
 
+		String[][] newArray = new String[row][col - 1]; // new Array will have one column less
 
-	    for(int i = 0; i < row; i++)
-	    {
-	        for(int j = 0,currColumn=0; j < col; j++)
-	        {
-	            if(j != colRemove)
-	            {
-	                newArray[i][currColumn++] = array[i][j];
-	            }
-	        }
-	    }
+		for (int i = 0; i < row; i++) {
+			for (int j = 0, currColumn = 0; j < col; j++) {
+				if (j != colRemove) {
+					newArray[i][currColumn++] = array[i][j];
+				}
+			}
+		}
 
-	    return newArray;
+		return newArray;
 	}
 
 	public String[][] removeRow(String[][] array, int index) {
@@ -476,17 +485,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		int columIndex = 0;
 		int startIndex = 0;
 		int num = array.length;
-		
-		/*// Testing
-				for (int x = 0; x < newIncMatrix.length; x++) {
-					for (int y = 0; y < newIncMatrix[x].length; y++) {
-						System.out.print(newIncMatrix[x][y] + " ");
-					}
-					System.out.println("\n");
-				}
-				System.out.println("--------------------------------------------");
-				// Testing
-*/
+
 		// deal with row, move row
 		// if the row is the last one
 		int count = 0;
@@ -503,6 +502,9 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 					newIncMatrix[count][c] = array[x][c];
 				}
 				count++;
+			}
+			for (int b = 0; b < array[count].length; b++) {
+				newIncMatrix[count][b] = null;
 			}
 		}
 		return newIncMatrix;
@@ -528,7 +530,7 @@ class ByWeightComparator implements Comparator<MyPair> {
 
 	@Override
 	public int compare(MyPair o1, MyPair o2) {
-		if (o1.getValue() < o2.getValue())
+		if (o1.getValue() > o2.getValue())
 			return -1;
 		else if (o1.getValue() == o2.getValue())
 			return 0;

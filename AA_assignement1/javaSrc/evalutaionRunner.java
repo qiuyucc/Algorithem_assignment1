@@ -34,8 +34,13 @@ public class evalutaionRunner {
 	public static void main(String [] args) throws ClassNotFoundException,IllegalAccessException,InstantiationException, IOException
 	{
 		adjGraph =new AdjList();
+		incGraph= new IncidenceMatrix();
 		startTime = System.nanoTime();
-		createAdjGraph();
+		//createAdjGraph();
+		createIncGraph();
+		scen1_shrinkGraph();
+		//scen2_nestestNeigh();
+		//scen3_changeAssoc();
 		endTime=System.nanoTime();
 		System.out.println(" Init Time: " + ((double) (endTime - startTime)) / Math.pow(10, 9) + " sec");
 	}
@@ -48,8 +53,11 @@ public class evalutaionRunner {
 		try 
 		{
 			String path = new File("").getAbsolutePath();
-			File output = new File(path + "/javaSrc/100-0.1.txt");
-			BufferedReader reader = new BufferedReader(new FileReader(output));
+			File output1 = new File(path + "/100-0.1.txt");
+			File output2 = new File(path + "/100-0.5.txt");
+			File output3 = new File(path + "/100-0.8.txt");
+			File output4 = new File(path + "/default.txt");
+			BufferedReader reader = new BufferedReader(new FileReader(output4));
 			String line;
 			String delimiter = "\\s+";
 			String[] tokens;
@@ -62,9 +70,6 @@ public class evalutaionRunner {
                 srcLabel = tokens[0];
                 tarLabel = tokens[1];
                 weight =Integer.parseInt(tokens[2]); 
-                System.out.println(tokens[0]);
-                System.out.println(tokens[1]);
-                System.out.println(tokens[2]);
                 adjGraph.addVertex(srcLabel);
                 adjGraph.addVertex(tarLabel);
                 adjGraph.addEdge(srcLabel, tarLabel,weight);
@@ -79,15 +84,17 @@ public class evalutaionRunner {
 	}
 	
 	
-	/*private static void createIncGraph() {
-		
-		//AdjList tempGraph = new AdjList();
+	private static void createIncGraph() {
 		try 
 		{
-			
-			BufferedReader reader = new BufferedReader(new FileReader(fileName));
+			String path = new File("").getAbsolutePath();
+			File output1 = new File(path + "/100-0.1.txt");
+			File output2 = new File(path + "/100-0.5.txt");
+			File output3 = new File(path + "/100-0.8.txt");
+			File output4 = new File(path + "/default.txt");
+			BufferedReader reader = new BufferedReader(new FileReader(output3));
 			String line;
-			String delimiter = " ";
+			String delimiter = "\\s+";
 			String[] tokens;
 			String srcLabel, tarLabel;
 			int weight;
@@ -97,7 +104,7 @@ public class evalutaionRunner {
 				tokens = line.split(delimiter);
                 srcLabel = tokens[0];
                 tarLabel = tokens[1];
-                weight =Integer.parseInt(tokens[3]); 
+                weight =Integer.parseInt(tokens[2]); 
                 incGraph.addVertex(srcLabel);
                 incGraph.addVertex(tarLabel);
                 incGraph.addEdge(srcLabel, tarLabel,weight);
@@ -109,23 +116,25 @@ public class evalutaionRunner {
 		{
 			System.out.println("Error:Something went wrong");
 		}
-	}*/
+	}
 	
 
 
-	private static void scent3_changeAssoc() {
-		
-		
+	private static void scen3_changeAssoc() {
+		//adjGraph.updateWeightEdge("74", "81", 19);
+		incGraph.updateWeightEdge("74", "81", 19);
 	}
 
 	private static void scen2_nestestNeigh() {
-		
+		//adjGraph.inNearestNeighbours(-1, "1");
+		incGraph.inNearestNeighbours(-1, "1");
+ 
 		
 	}
 
 	private static void scen1_shrinkGraph() {
-		
-		
+		//adjGraph.removeVertex("1");
+		incGraph.removeVertex("1");
 	}
 	
 }

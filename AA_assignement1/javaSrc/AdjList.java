@@ -88,8 +88,8 @@ public class AdjList extends AbstractAssocGraph {
 	public void addVertex(String vertLabel) {
 		// check the vertex existed or not
 		if (getIndex(vertLabel)!=-1) {
-			System.out.println("AddVertex: " + vertLabel);
-			System.out.println("Failed, vertex already exists.");
+			//System.out.println("AddVertex: " + vertLabel);
+			//System.out.println("Failed, vertex already exists.");
 			return;
 		}
 		// if array of vertex is full, we have to expand it and Edges
@@ -100,7 +100,7 @@ public class AdjList extends AbstractAssocGraph {
 		
 		names[numVertices++] = vertLabel;
 	    
-		System.out.println("This vertex added: " + names[numVertices - 1] +numVertices);
+		//System.out.println("This vertex added: " + names[numVertices - 1] +numVertices);
 	} // end of addVertex()
 
 	public void addEdge(String srcLabel, String tarLabel, int weight) {
@@ -108,24 +108,24 @@ public class AdjList extends AbstractAssocGraph {
 		Node newNode = new Node(tarLabel, weight);
 		int i = getIndex(srcLabel);
 		if (i == -1) {
-			System.out.print("addEdge failed: ");
-			System.out.print(srcLabel);
-			System.out.println(" - does not exist.");
+			//System.out.print("addEdge failed: ");
+			//System.out.print(srcLabel);
+			//System.out.println(" - does not exist.");
 			return;
 		}
 		int j = getIndex(tarLabel);
 		if (j == -1) {
-			System.out.print("addEdge failed: ");
-			System.out.print(tarLabel);
-			System.out.println(" - does not exist.");
+			//System.out.print("addEdge failed: ");
+			//System.out.print(tarLabel);
+			//System.out.println(" - does not exist.");
 			return;
 		}
 		if (this.list[i].find(newNode) == true) {
-			System.out.print("addEdge failed: ");
-			System.out.println(" - edge already exist.");
+			//System.out.print("addEdge failed: ");
+			//System.out.println(" - edge already exist.");
 			return;
 		}
-		System.out.println("addEdge success");
+		//System.out.println("addEdge success");
 		list[i].add(newNode);
 		list[i].mLengthInc();
 		numEdges++;
@@ -136,15 +136,15 @@ public class AdjList extends AbstractAssocGraph {
 		// Implement me!
 		int i = getIndex(srcLabel);
 		if (i == -1) {
-			System.out.print("getEdge failed: ");
-			System.out.print(srcLabel);
-			System.out.println(" does not exist.");
+			//System.out.print("getEdge failed: ");
+			//System.out.print(srcLabel);
+			//System.out.println(" does not exist.");
 			return EDGE_NOT_EXIST;
 		}
 		if (this.list[i].find(tarLabel) == null) {
-			System.out.print("getEdge failed: ");
-			System.out.print(tarLabel);
-			System.out.println(" does not exist.");
+			//System.out.print("getEdge failed: ");
+			//System.out.print(tarLabel);
+			//System.out.println(" does not exist.");
 			return EDGE_NOT_EXIST;
 		}
 		return this.list[i].find(tarLabel).getWeight();
@@ -156,22 +156,22 @@ public class AdjList extends AbstractAssocGraph {
 		Node newNode = new Node(tarLabel, weight);
 		int i = getIndex(srcLabel);
 		if (i == -1) {
-			System.out.print("updateWeightEdge failed: ");
-			System.out.print(srcLabel);
-			System.out.println(" does not exist.");
+			//System.out.print("updateWeightEdge failed: ");
+			//System.out.print(srcLabel);
+			//System.out.println(" does not exist.");
 			return;
 		}
 		if (this.list[i].find(newNode) == false) {
-			System.out.print("updateWeightEdge failed: ");
-			System.out.print("Edge");
-			System.out.println(" does not exist.");
+			//System.out.print("updateWeightEdge failed: ");
+			//System.out.print("Edge");
+			//System.out.println(" does not exist.");
 			return;
 		}
 		if (this.list[i].find(tarLabel).getWeight() == weight) {
-			System.out.println("updated fail - same value");
+			//System.out.println("updated fail - same value");
 			return;
 		}
-		System.out.println("updated success");
+		//System.out.println("updated success");
 		this.list[i].find(tarLabel).setWeight(weight);
 
 	} // end of updateWeightEdge()
@@ -180,9 +180,9 @@ public class AdjList extends AbstractAssocGraph {
 
 		int i = getIndex(vertLabel);
 		if (i == -1) {
-			System.out.print("remove failed: ");
-			System.out.print(vertLabel);
-			System.out.println(" does not exist.");
+			//System.out.print("remove failed: ");
+			//System.out.print(vertLabel);
+			//System.out.println(" does not exist.");
 			return;
 		}
 		// delete the vertLabel in the names array
@@ -203,7 +203,7 @@ public class AdjList extends AbstractAssocGraph {
 			list[z].delete(vertLabel);
 		}
 		
-		System.out.println("remove success");
+		//System.out.println("remove success");
 
 	} // end of removeVertex()
 
@@ -217,13 +217,13 @@ public class AdjList extends AbstractAssocGraph {
 
 		int i = getIndex(vertLabel);
 		if (i == -1) {
-			System.out.print("search failed: ");
-			System.out.print(vertLabel);
-			System.out.println("does not exist.");
+			//System.out.print("search failed: ");
+			//System.out.print(vertLabel);
+			//System.out.println("does not exist.");
 			return neighbours;
 		}
 		if (k > list.length - 1 || k < -1) {
-			System.out.print("out of bound");
+			//System.out.print("out of bound");
 		}
 		if (k != -1) {
 
@@ -258,7 +258,7 @@ public class AdjList extends AbstractAssocGraph {
 				}
 				else 
 				{
-					System.out.println("out of bound -- vertex number");
+					//System.out.println("out of bound -- vertex number");
 				}
 				
 			}
@@ -280,7 +280,7 @@ public class AdjList extends AbstractAssocGraph {
 		}
 		/*for(int x=0; x<neighbours.size();x++) 
 		{
-			System.out.println(neighbours.get(x).getKey()+" "+ neighbours.get(x).getValue());
+			//System.out.println(neighbours.get(x).getKey()+" "+ neighbours.get(x).getValue());
 		}*/
 		
 		return neighbours;
@@ -292,14 +292,14 @@ public class AdjList extends AbstractAssocGraph {
 
 		int i = getIndex(vertLabel);
 		if (i == -1) {
-			System.out.print("search failed: ");
-			System.out.print(vertLabel);
-			System.out.println("does not exist.");
+			//System.out.print("search failed: ");
+			//System.out.print(vertLabel);
+			//System.out.println("does not exist.");
 			return neighbours;
 		}
 		String[] nbrs = getNeighbors(vertLabel); // vertex a, neighbor: b,c,d
 		if (k > list.length - 1 || k < -1) {
-			System.out.println("out of bound");
+			//System.out.println("out of bound");
 		}
 		if (k != -1) {
 
@@ -325,7 +325,7 @@ public class AdjList extends AbstractAssocGraph {
 				else 
 				{
 					
-					System.out.println("out of bound");
+					//System.out.println("out of bound");
 				}
 			}
 
@@ -345,21 +345,21 @@ public class AdjList extends AbstractAssocGraph {
 
 	public Integer getWeight(int i, int j) {
 		if ((i < 0) || (i > numVertices - 1)) {
-			System.out.print("getWeight failed: ");
-			System.out.print("index " + i);
-			System.out.println(" out of bounds.");
+			//System.out.print("getWeight failed: ");
+			//System.out.print("index " + i);
+			//System.out.println(" out of bounds.");
 			return -1;
 		}
 
 		if ((j < 0) || (j > numVertices - 1)) {
-			System.out.print("getWeight failed: ");
-			System.out.print("index " + j);
-			System.out.println(" out of bounds.");
+			//System.out.print("getWeight failed: ");
+			//System.out.print("index " + j);
+			//System.out.println(" out of bounds.");
 			return -1;
 		}
 		
 		// Look for vertex j in list[i]
-//System.out.println("Looking for " + names[j] + " in linked list " + i);
+////System.out.println("Looking for " + names[j] + " in linked list " + i);
 		Node e = list[i].find(list[i].get(j));
 
 		// If vertex j is found in Edges[i] then return the weight of
@@ -372,9 +372,9 @@ public class AdjList extends AbstractAssocGraph {
 
 	public void printVertices(PrintWriter os) {
 		//when use PRINTWRITER to test, remember to flush and close.
-		//System.out.println(numVertices);
+		////System.out.println(numVertices);
 		/*for (int i = 0; i < numVertices; i++) {
-			System.out.println(names[i] + " ");
+			//System.out.println(names[i] + " ");
 		}*/
 		for (int i = 0; i < numVertices; i++) {
 			os.println(names[i] + " ");
@@ -404,20 +404,21 @@ public class AdjList extends AbstractAssocGraph {
     	  e.printStackTrace();
       }
 		*/
+	 
 		for(int i = 0;i<numVertices;i++) 
 		{
 			list[i].displayList(names,i,os);
 		}
 		
-	} // end of printEdges()
+	} // end of printEdges
 
 	// returns the name of all the neighbors of a given vertex in a string array
 	public String[] getNeighbors(String vertex) {
 		int source = getIndex(vertex);
 		if (source == -1) {
-			System.out.print("getNeighbors failed: Vertex ");
-			System.out.print(vertex);
-			System.out.println(" does not exist.");
+			//System.out.print("getNeighbors failed: Vertex ");
+			//System.out.print(vertex);
+			//System.out.println(" does not exist.");
 			return null;
 		}
 		return list[source].copyIntoArray();
@@ -428,9 +429,9 @@ public class AdjList extends AbstractAssocGraph {
 
 	public int[] getNeighbors(int index) {
 		if ((index < 0) || (index >= numVertices)) {
-			System.out.print("getNeighbors failed: Index");
-			System.out.print(index);
-			System.out.println(" is out of bounds.");
+			//System.out.print("getNeighbors failed: Index");
+			//System.out.print(index);
+			//System.out.println(" is out of bounds.");
 			return null;
 		}
 
@@ -485,7 +486,7 @@ public class AdjList extends AbstractAssocGraph {
 		}
 
 		public void displayNode() {
-			System.out.print(mValue);
+			//System.out.print(mValue);
 		}
 	} // end of inner class Node
 
@@ -559,13 +560,14 @@ public class AdjList extends AbstractAssocGraph {
 		}
 
 		public void displayList(String[] list,int i,PrintWriter os) {
-			//System.out.print("List (first-->last):");
+			////System.out.print("List (first-->last):");
 			Node current = mHead;
-			while (current != null &&current.getWeight() !=0) {				
+			while (current != null &&current.getWeight() !=0) {
+				
 					os.println(list[i] +" "+ current.getValue()+" "+current.getWeight());
 					current = current.getNext();				
 			}
-			//System.out.println("");
+			////System.out.println("");
 		}
 
 		public void clear() {
@@ -610,7 +612,7 @@ public class AdjList extends AbstractAssocGraph {
 		 * Print the list in head to tail.
 		 */
 		public void print() {
-			System.out.println(toString());
+			//System.out.println(toString());
 		} // end of print()
 
 		/**

@@ -31,13 +31,13 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 	public void addVertex(String vertLabel) {
 		// check the vertex existed or not
 		if (getIndex(vertLabel) != -1) {
-			System.out.println("AddVertex: " + vertLabel);
-			System.out.println("Failed, vertex already exists.");
+			//System.out.println("AddVertex: " + vertLabel);
+			//System.out.println("Failed, vertex already exists.");
 			return;
 		}
 		if (Ys == 0) {
 			incMatrix[Ys][0] = vertLabel;
-			System.out.println("This vertex added: " + incMatrix[Ys][0]);
+			//System.out.println("This vertex added: " + incMatrix[Ys][0]);
 			Ys++;
 		} else {
 			// if array of vertex is full, we have to expand it and Edges
@@ -45,9 +45,9 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 				incMatrix = resize(incMatrix, Ys);
 			}
 			incMatrix[Ys][0] = vertLabel;
-			System.out.println("This vertex added: " + incMatrix[Ys][0]);
+			//System.out.println("This vertex added: " + incMatrix[Ys][0]);
 			Ys++;
-			// System.out.println(Ys);
+			// //System.out.println(Ys);
 		}
 	} // end of addVertex()
 
@@ -59,15 +59,15 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 
 			int src = getIndex(srcLabel);
 			if (src == -1) {
-				System.out.println("AddEdge: " + srcLabel);
-				System.out.println("Failed, vertex already exists.");
+				//System.out.println("AddEdge: " + srcLabel);
+				//System.out.println("Failed, vertex already exists.");
 				return;
 			}
 			int tar = getIndex(tarLabel);
 
 			if (tar == -1) {
-				System.out.println("AddEdge: " + tarLabel);
-				System.out.println("Failed, vertex already exists.");
+				//System.out.println("AddEdge: " + tarLabel);
+				//System.out.println("Failed, vertex already exists.");
 				return;
 			}
 			if (tar > src) {
@@ -83,7 +83,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			}
 
 		} else {
-			System.out.println("No self connected edge in this case!");
+			//System.out.println("No self connected edge in this case!");
 		}
 
 	} // end of addEdge()
@@ -93,14 +93,14 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		int src = getIndex(srcLabel);
 		if (srcLabel != tarLabel) {
 			if (src == -1) {
-				System.out.println("getEdgeWeight: " + srcLabel);
-				System.out.println("Failed, vertex not exists.");
+				//System.out.println("getEdgeWeight: " + srcLabel);
+				//System.out.println("Failed, vertex not exists.");
 				return EDGE_NOT_EXIST;
 			}
 			int tar = getIndex(tarLabel);
 			if (tar == -1) {
-				System.out.println("getEdgeWeight: " + tarLabel);
-				System.out.println("Failed, vertex not exists.");
+				//System.out.println("getEdgeWeight: " + tarLabel);
+				//System.out.println("Failed, vertex not exists.");
 				return EDGE_NOT_EXIST;
 			}
 		    if (src < tar) {
@@ -128,10 +128,10 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 				
 			}
 		} else {
-			System.out.println("No self connected edge in this case!");
+			//System.out.println("No self connected edge in this case!");
 			return EDGE_NOT_EXIST;
 		}
-		//System.out.println(weight);
+		////System.out.println(weight);
 		return weight;
 
 	} // end of existEdge()
@@ -143,13 +143,13 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		int negWeight = -weight;
 		if (srcLabel != tarLabel) {
 			if (src == -1) {
-				System.out.println("update: " + srcLabel);
-				System.out.println("Failed, vertex doesnt exists.");
+				//System.out.println("update: " + srcLabel);
+				//System.out.println("Failed, vertex doesnt exists.");
 			}
 			int tar = getIndex(tarLabel);
 			if (tar == -1) {
-				System.out.println("update: " + tarLabel);
-				System.out.println("Failed, vertex doesnt exists.");
+				//System.out.println("update: " + tarLabel);
+				//System.out.println("Failed, vertex doesnt exists.");
 
 			}
 			if (src < tar) {
@@ -160,7 +160,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 					incMatrix[tar][index] = Integer.toString(negWeight);
 				}
 				
-				System.out.println("updated success");
+				//System.out.println("updated success");
 			}
 			if (src > tar) {
 				
@@ -170,10 +170,10 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 					incMatrix[tar][index] = Integer.toString(negWeight);
 				}
 			
-				System.out.println("updated success");
+				//System.out.println("updated success");
 			}
 		} else {
-			System.out.println("No self connected edge in this case!");
+			//System.out.println("No self connected edge in this case!");
 		}
 
 	} // end of updateWeightEdge()
@@ -182,8 +182,8 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		int columIndex = 0;
 		int i = getIndex(vertLabel);
 		if (i == -1) {
-			System.out.print("remove vertex:" + vertLabel);
-			System.out.println("does not exist");
+			//System.out.print("remove vertex:" + vertLabel);
+			//System.out.println("does not exist");
 		}
 
 		int index = findstartIndexForVertex(incMatrix, vertLabel);
@@ -213,7 +213,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			} else {
 				int count = 0;
 				int tempColumIndex = index;
-				// System.out.println(tempColumIndex);
+				// //System.out.println(tempColumIndex);
 				for (int k = 0; k < i; k++) {
 
 					// calculate the which column should be deleted
@@ -258,7 +258,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		// Search for the Search D for 2D array to find, ensure the weight number is
 		// postive
 		if (k > incMatrix.length || k < -1) {
-			System.out.println("out of bound");
+			//System.out.println("out of bound");
 		}
 
 		if (index == 0) {
@@ -328,7 +328,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 								}
 							}
 						
-							// System.out.println(mp.getValue() + " "+mp.getKey());
+							// //System.out.println(mp.getValue() + " "+mp.getKey());
 						}
 					}
 				}
@@ -345,12 +345,12 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 
 		if (k == -1 || k > neighboursTemp.size()) {
 			for (int i = 0; i < neighboursTemp.size(); i++) {
-				//System.out.println(neighbours.get(i).getKey() + " " + neighbours.get(i).getValue());
+				////System.out.println(neighbours.get(i).getKey() + " " + neighbours.get(i).getValue());
 				neighbours.add(neighboursTemp.get(i));
 			}
 		} else {
 			for (int i = 0; i < k; i++) {
-				//System.out.println(neighbours.get(i).getKey() + " " + neighbours.get(i).getValue());
+				////System.out.println(neighbours.get(i).getKey() + " " + neighbours.get(i).getValue());
 				neighbours.add(neighboursTemp.get(i));
 			}
 
@@ -370,7 +370,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		// Search for the Search D for 2D array to find, ensure the weight number is
 		// postive
 		if (k > incMatrix.length || k < -1) {
-			System.out.println("out of bound");
+			//System.out.println("out of bound");
 		}
 
 		if (index == 0) {
@@ -439,7 +439,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 								}
 							}
 						
-							// System.out.println(mp.getValue() + " "+mp.getKey());
+							// //System.out.println(mp.getValue() + " "+mp.getKey());
 						}
 					}
 				}
@@ -457,12 +457,12 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 		if (k == -1 || k > neighboursTemp.size()) {
 			for (int i = 0; i < neighboursTemp.size(); i++) {
 				neighbours.add(neighboursTemp.get(i));
-				//System.out.println(neighbours.get(i).getKey() + " " + neighbours.get(i).getValue());
+				////System.out.println(neighbours.get(i).getKey() + " " + neighbours.get(i).getValue());
 			}
 		} else {
 			for (int i = 0; i < k; i++) {
 				neighbours.add(neighboursTemp.get(i));
-				//System.out.println(neighbours.get(i).getKey() + " " + neighbours.get(i).getValue());
+				////System.out.println(neighbours.get(i).getKey() + " " + neighbours.get(i).getValue());
 			}
 
 		}
@@ -487,7 +487,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 						if (isInteger(incMatrix[z][x])) {
 							int weight1 = Integer.parseInt(incMatrix[i][x]);
 							int weight2 = Integer.parseInt(incMatrix[z][x]);
-							// System.out.println(weight1+" "+weight2);
+							// //System.out.println(weight1+" "+weight2);
 							if (weight1 + weight2 == 0) {
 								os.println(incMatrix[i][0] + " " + incMatrix[z][0] + " " + weight1);
 
@@ -523,9 +523,9 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			temp = new String[3][4];
 			for (int i = 0; i < array.length; i++) {
 				for (int y = 0; y < array[i].length; y++) {
-					// System.out.println(i + " " + y);
+					// //System.out.println(i + " " + y);
 					temp[i][y] = array[i][y];
-					// System.out.println(array[1][0]);
+					// //System.out.println(array[1][0]);
 
 				}
 			}
@@ -533,7 +533,7 @@ public class IncidenceMatrix extends AbstractAssocGraph {
 			temp = new String[newYs + 1][((newYs+1) * (newYs + 2)) / 2 + 1];
 			for (int i = 0; i < array.length; i++) {
 				for (int y = 0; y < array[i].length; y++) {
-					// System.out.println(i + " " + y);
+					 //System.out.println(i + " " + y);
 					temp[i][y] = array[i][y];
 				}
 			}

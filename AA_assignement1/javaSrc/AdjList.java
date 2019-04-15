@@ -97,8 +97,10 @@ public class AdjList extends AbstractAssocGraph {
 			names = resize(names, 2 * numVertices + 1);
 			list = resize(list, 2 * numVertices + 1);
 		}
+		
 		names[numVertices++] = vertLabel;
-		System.out.println("This vertex added: " + names[numVertices - 1]);
+	    
+		System.out.println("This vertex added: " + names[numVertices - 1] +numVertices);
 	} // end of addVertex()
 
 	public void addEdge(String srcLabel, String tarLabel, int weight) {
@@ -140,7 +142,7 @@ public class AdjList extends AbstractAssocGraph {
 			return EDGE_NOT_EXIST;
 		}
 		if (this.list[i].find(tarLabel) == null) {
-			System.out.print("addEdge failed: ");
+			System.out.print("getEdge failed: ");
 			System.out.print(tarLabel);
 			System.out.println(" does not exist.");
 			return EDGE_NOT_EXIST;
@@ -200,6 +202,8 @@ public class AdjList extends AbstractAssocGraph {
 		for (int z = 0; z < list.length; z++) {
 			list[z].delete(vertLabel);
 		}
+		
+		System.out.println("remove success");
 
 	} // end of removeVertex()
 
@@ -354,7 +358,7 @@ public class AdjList extends AbstractAssocGraph {
 			return -1;
 		}
 		
-		// Look for vertex j in Edges[i]
+		// Look for vertex j in list[i]
 //System.out.println("Looking for " + names[j] + " in linked list " + i);
 		Node e = list[i].find(list[i].get(j));
 
@@ -368,21 +372,43 @@ public class AdjList extends AbstractAssocGraph {
 
 	public void printVertices(PrintWriter os) {
 		//when use PRINTWRITER to test, remember to flush and close.
+		//System.out.println(numVertices);
+		/*for (int i = 0; i < numVertices; i++) {
+			System.out.println(names[i] + " ");
+		}*/
 		for (int i = 0; i < numVertices; i++) {
 			os.println(names[i] + " ");
 		}
+		
 	} // end of printVertices()
 
 	public void printEdges(PrintWriter os) {
-
-		for (int i = 0; i < numVertices; i++) {
-			int[] nbrs = getNeighbors(i);
-			for (int j = 0; j < nbrs.length; j++) {
-				if(list[i].find(names[nbrs[j]]).getWeight()==0)
-					continue;
-				os.println(names[i] + " " + names[nbrs[j]]+" "+list[i].find(names[nbrs[j]]).getWeight());
-			}
+   /*  try 
+      {
+     
+    	  for (int i = 0; i < numVertices; i++) {
+  			int[] nbrs = getNeighbors(i);
+  			for (int j = 0; j < nbrs.length; j++) {
+  				
+  					
+  					if (list[i].find(names[nbrs[j]]).getWeight() == 0)
+  	  					continue;
+  	  				os.println(names[i] + " " + names[nbrs[j]]+" "+list[i].find(names[nbrs[j]]).getWeight());
+  	  			
+  				
+  			}
+  		}
+      }
+      catch(RuntimeException e) 
+      {
+    	  e.printStackTrace();
+      }
+		*/
+		for(int i = 0;i<numVertices;i++) 
+		{
+			list[i].displayList(names,i,os);
 		}
+		
 	} // end of printEdges()
 
 	// returns the name of all the neighbors of a given vertex in a string array
@@ -459,7 +485,7 @@ public class AdjList extends AbstractAssocGraph {
 		}
 
 		public void displayNode() {
-			System.out.print("{" + mValue + "}");
+			System.out.print(mValue);
 		}
 	} // end of inner class Node
 
@@ -532,14 +558,14 @@ public class AdjList extends AbstractAssocGraph {
 			return current;
 		}
 
-		public void displayList() {
-			System.out.print("List (first-->last):");
+		public void displayList(String[] list,int i,PrintWriter os) {
+			//System.out.print("List (first-->last):");
 			Node current = mHead;
-			while (current != null) {
-				current.displayNode();
-				current = current.getNext();
+			while (current != null &&current.getWeight() !=0) {				
+					os.println(list[i] +" "+ current.getValue()+" "+current.getWeight());
+					current = current.getNext();				
 			}
-			System.out.println("");
+			//System.out.println("");
 		}
 
 		public void clear() {

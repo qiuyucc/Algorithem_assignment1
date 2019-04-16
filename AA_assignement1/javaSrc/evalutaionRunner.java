@@ -53,10 +53,11 @@ public class evalutaionRunner {
 		try 
 		{
 			String path = new File("").getAbsolutePath();
-			File output1 = new File(path + "/100-0.1.txt");
-			File output2 = new File(path + "/100-0.5.txt");
-			File output3 = new File(path + "/100-0.8.txt");
-			File output4 = new File(path + "/default.txt");
+			File output1 = new File(path + "/javaSrc/100-0.1.txt");
+			File output2 = new File(path + "/javaSrc/100-0.5.txt");
+			File output3 = new File(path + "/javaSrc/100-0.8.txt");
+			File output4 = new File(path + "/javaSrc/default.txt");
+			File output5 = new File(path + "/javaSrc/200-0.5.txt");
 			BufferedReader reader = new BufferedReader(new FileReader(output4));
 			String line;
 			String delimiter = "\\s+";
@@ -88,11 +89,12 @@ public class evalutaionRunner {
 		try 
 		{
 			String path = new File("").getAbsolutePath();
-			File output1 = new File(path + "/100-0.1.txt");
-			File output2 = new File(path + "/100-0.5.txt");
-			File output3 = new File(path + "/100-0.8.txt");
-			File output4 = new File(path + "/default.txt");
-			BufferedReader reader = new BufferedReader(new FileReader(output3));
+			File output1 = new File(path + "/javaSrc/100-0.1.txt");
+			File output2 = new File(path + "/javaSrc/100-0.5.txt");
+			File output3 = new File(path + "/javaSrc/100-0.8.txt");
+			File output4 = new File(path + "/javaSrc/default.txt");
+			File output5 = new File(path + "/javaSrc/200-0.5.txt");
+			BufferedReader reader = new BufferedReader(new FileReader(output1));
 			String line;
 			String delimiter = "\\s+";
 			String[] tokens;
@@ -104,6 +106,7 @@ public class evalutaionRunner {
 				tokens = line.split(delimiter);
                 srcLabel = tokens[0];
                 tarLabel = tokens[1];
+                //System.out.println(tokens[2]);
                 weight =Integer.parseInt(tokens[2]); 
                 incGraph.addVertex(srcLabel);
                 incGraph.addVertex(tarLabel);
@@ -127,14 +130,19 @@ public class evalutaionRunner {
 
 	private static void scen2_nestestNeigh() {
 		//adjGraph.inNearestNeighbours(-1, "1");
-		incGraph.inNearestNeighbours(-1, "1");
+		incGraph.inNearestNeighbours(-1, "74");
  
 		
 	}
 
 	private static void scen1_shrinkGraph() {
 		//adjGraph.removeVertex("1");
-		incGraph.removeVertex("1");
+		for(int x =1; x<100; x++) 
+		{
+			String xs=Integer.toString(x);
+			incGraph.removeVertex(xs);
+		}
+		
 	}
 	
 }
